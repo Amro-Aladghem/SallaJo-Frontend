@@ -1,0 +1,38 @@
+import axios from 'axios';
+
+export interface ApiSuccess<T> {
+  isSuccess: true;
+  data: T;
+}
+
+export interface ApiFailure {
+  isSuccess: false;
+  error: string;
+  statusCode: number;
+}
+
+export type ApiResponse<T> = ApiSuccess<T> | ApiFailure;
+
+export interface UploadImageResult {
+  uploadedImageUrl: string;
+}
+
+export interface ApiResult {
+  isDone: boolean;
+}
+
+const api = axios.create({
+  baseURL: 'https://localhost:7268/api/v1',
+  withCredentials: true,
+});
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const statusCode = error.response?.status ?? 0;
+    const message = error.response?.data?.title ?? error.message ?? 'حدث خطأ غير متوقع';
+     return Promise.reject({ message, statusCode });
+  },
+);
+
+export default api;

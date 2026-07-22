@@ -1,0 +1,158 @@
+import api, { type ApiResponse, type ApiResult } from '@/libs/api';
+import type {
+  AddInitialStoreInfoDto,
+  InitialStoreInfoDto,
+  StoreInfoForSellerDto,
+  StorePageInfoDto,
+  StoreInfoForCustomerDto,
+  UpdateStoreInfoDto,
+  AddOfferDto,
+  OfferCustomerInfoDto,
+  UpdateOfferDto,
+  OfferFullInfoDto,
+  GetProductsPaginatedRequestDto,
+  GetProductsPaginatedDto,
+} from '@/types/dtos';
+
+const baseUri = '/stores';
+
+function toFormData<T extends object>(data: T, file?: File): FormData {
+  const formData = new FormData();
+  for (const [key, value] of Object.entries(data)) {
+    if (value !== null && value !== undefined) {
+      formData.append(key, String(value));
+    }
+  }
+  if (file) {
+    formData.append('image', file);
+  }
+  return formData;
+}
+
+export const StoreService = {
+  async createStore(data: AddInitialStoreInfoDto, image?: File): Promise<ApiResponse<InitialStoreInfoDto>> {
+    try {
+      const formData = toFormData(data, image);
+      const response = await api.post<InitialStoreInfoDto>(baseUri, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return { isSuccess: true, data: response.data };
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+
+  async getMyStore(): Promise<ApiResponse<StoreInfoForSellerDto>> {
+    try {
+      const response = await api.get<StoreInfoForSellerDto>(baseUri);
+      return { isSuccess: true, data: response.data };
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+
+  async getStorePage(slug: string): Promise<ApiResponse<StorePageInfoDto>> {
+    try {
+      const response = await api.get<StorePageInfoDto>(`${baseUri}/${slug}`);
+      return { isSuccess: true, data: response.data };
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+
+  async getStoreInfo(slug: string): Promise<ApiResponse<StoreInfoForCustomerDto>> {
+    try {
+      const response = await api.get<StoreInfoForCustomerDto>(`${baseUri}/${slug}/info`);
+      return { isSuccess: true, data: response.data };
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+
+  async updateStore(id: string, data: UpdateStoreInfoDto, image?: File): Promise<ApiResponse<ApiResult>> {
+    try {
+      const formData = toFormData(data, image);
+      const response = await api.put<ApiResult>(`${baseUri}/${id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return { isSuccess: true, data: response.data };
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+
+  async addOffer(data: AddOfferDto): Promise<ApiResponse<ApiResult>> {
+    try {
+      const response = await api.post<ApiResult>(`${baseUri}/offer`, data);
+      return { isSuccess: true, data: response.data };
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+
+  async toggleOfferStatus(id: string): Promise<ApiResponse<ApiResult>> {
+    try {
+      const response = await api.put<ApiResult>(`${baseUri}/offer/${id}/status`);
+      return { isSuccess: true, data: response.data };
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+
+  async getStoreOffers(storeId: string): Promise<ApiResponse<OfferCustomerInfoDto[]>> {
+    try {
+      const response = await api.get<OfferCustomerInfoDto[]>(`${baseUri}/${storeId}/offers`);
+      return { isSuccess: true, data: response.data };
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+
+  async updateOffer(id: string, data: UpdateOfferDto): Promise<ApiResponse<ApiResult>> {
+    try {
+      const response = await api.put<ApiResult>(`${baseUri}/offers/${id}`, data);
+      return { isSuccess: true, data: response.data };
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+
+  async getAllOffers(): Promise<ApiResponse<OfferFullInfoDto[]>> {
+    try {
+      const response = await api.get<OfferFullInfoDto[]>(`${baseUri}/offers`);
+      return { isSuccess: true, data: response.data };
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+
+  async getStoreProducts(slug: string, params: GetProductsPaginatedRequestDto): Promise<ApiResponse<GetProductsPaginatedDto>> {
+    try {
+      const response = await api.get<GetProductsPaginatedDto>(`${baseUri}/${slug}/products`, { params });
+      return { isSuccess: true, data: response.data };
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+
+  async getMyStoreProducts(params: GetProductsPaginatedRequestDto): Promise<ApiResponse<GetProductsPaginatedDto>> {
+    try {
+      const response = await api.get<GetProductsPaginatedDto>(`${baseUri}/products`, { params });
+      return { isSuccess: true, data: response.data };
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+};
