@@ -103,9 +103,9 @@ export const ProductController = {
     }
   },
 
-  async updateDiscount(id: string, discountId: string): Promise<ApiResponse<ApiResult>> {
+  async toggleDiscountStatus(productId: string, discountId: string): Promise<ApiResponse<ApiResult>> {
     try {
-      const response = await api.put<ApiResult>(`${baseUri}/${id}/discounts/${discountId}`);
+      const response = await api.put<ApiResult>(`${baseUri}/${productId}/discounts/${discountId}`);
       return { isSuccess: true, data: response.data };
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };

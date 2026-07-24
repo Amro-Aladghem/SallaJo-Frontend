@@ -1,5 +1,5 @@
 import api, { type ApiResponse, type ApiResult } from '@/libs/api';
-import type { PersonAuthDto, PersonAuthResponseDto } from '@/types/dtos';
+import type { PersonAuthDto, PersonAuthResponseDto, PersonInfoDto, UpdatePersonDto } from '@/types/dtos';
 
 const baseUri = '/persons';
 
