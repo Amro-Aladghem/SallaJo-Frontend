@@ -5,4 +5,5 @@ export interface ProductSimpleInfoDto {
   primaryImageLink: string;
   description: string;
   sequenceProductNumber: number | null;
+  amountOfDiscount: number | null;
 }

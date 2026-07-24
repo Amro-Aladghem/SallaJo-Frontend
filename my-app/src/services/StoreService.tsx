@@ -10,6 +10,7 @@ import type {
   OfferCustomerInfoDto,
   UpdateOfferDto,
   OfferFullInfoDto,
+  DiscountShortInfoDto,
   GetProductsPaginatedRequestDto,
   GetProductsPaginatedDto,
 } from '@/types/dtos';
@@ -106,9 +107,19 @@ export const StoreService = {
     }
   },
 
-  async getStoreOffers(storeId: string): Promise<ApiResponse<OfferCustomerInfoDto[]>> {
+  async getStoreOffers(slug: string): Promise<ApiResponse<OfferCustomerInfoDto[]>> {
     try {
-      const response = await api.get<OfferCustomerInfoDto[]>(`${baseUri}/${storeId}/offers`);
+      const response = await api.get<OfferCustomerInfoDto[]>(`${baseUri}/${slug}/offers`);
+      return { isSuccess: true, data: response.data };
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+
+  async getStoreDiscounts(slug: string): Promise<ApiResponse<DiscountShortInfoDto[]>> {
+    try {
+      const response = await api.get<DiscountShortInfoDto[]>(`${baseUri}/${slug}/active`);
       return { isSuccess: true, data: response.data };
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };

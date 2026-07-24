@@ -2,7 +2,7 @@ import type { StoreInfoForSellerDto, PersonAuthResponseDto } from '@/types/dtos'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/Avatar';
 import { User, Headset, Store, LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 interface Props {
   store: StoreInfoForSellerDto | null | undefined;
@@ -41,9 +41,9 @@ export default function DashboardNavbar({ store, person }: Props) {
             <span className="font-medium">{person.fullName || 'حسابك'}</span>
           </button>
 
-          <button className="text-sm text-gray-600 hover:text-primary transition-colors">
+          <Link to="/seller/support" className="text-sm text-gray-600 hover:text-primary transition-colors">
             الدعم الفني
-          </button>
+          </Link>
 
           <button className="flex items-center gap-2 text-sm text-gray-600 hover:text-primary transition-colors">
             <Store className="h-4 w-4" />
@@ -91,15 +91,15 @@ export default function DashboardNavbar({ store, person }: Props) {
 
       {/* Mobile bottom tab bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-gray-200 bg-white py-4">
-        <button className="flex flex-col items-center gap-0.5 text-primary">
+        <Link to="/seller/info" className="flex flex-col items-center gap-0.5 text-primary">
           <User className="h-5 w-5" />
-        </button>
-        <button className="flex flex-col items-center gap-0.5 text-gray-400 hover:text-primary transition-colors">
+        </Link>
+        <Link to="/seller/support" className="flex flex-col items-center gap-0.5 text-gray-400 hover:text-primary transition-colors">
           <Headset className="h-5 w-5" />
-        </button>
-        <button className="flex flex-col items-center gap-0.5 text-gray-400 hover:text-primary transition-colors">
+        </Link>
+        <Link to="/seller/store/info" className="flex flex-col items-center gap-0.5 text-gray-400 hover:text-primary transition-colors">
           <Store className="h-5 w-5" />
-        </button>
+        </Link>
         <button onClick={handleLogout} className="flex flex-col items-center gap-0.5 text-gray-400 hover:text-red-500 transition-colors">
           <LogOut className="h-5 w-5" />
         </button>
