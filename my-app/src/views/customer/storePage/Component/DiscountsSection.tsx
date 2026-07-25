@@ -34,7 +34,7 @@ export default function DiscountsSection({ discounts, slug, onViewAll }: Props) 
                 isClickable
                 linkTo={`/store/${slug}/products/${discount.product.id}`}
                 isDiscount
-                discountPercent={discount.discountAmount ?? undefined}
+                discountAmount={discount.discountAmount ?? undefined}
               />
             </div>
           ))}

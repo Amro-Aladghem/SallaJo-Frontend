@@ -10,6 +10,7 @@ import {
   getCustomerOffers,
   getCustomerDiscounts,
 } from '@/libs/customerStorage';
+import { initCart } from '@/libs/cart';
 import Loader from '@/components/Loader';
 import ErrorPage from '@/components/ErrorPage';
 import StoreHeader from './Component/StoreHeader';
@@ -34,6 +35,7 @@ export default function StorePage() {
     if (!slug) return;
 
     const load = async () => {
+      initCart();
       const storeResult = await StoreService.getStorePage(slug);
       if (storeResult.isSuccess) {
         setCustomerStore(storeResult.data);

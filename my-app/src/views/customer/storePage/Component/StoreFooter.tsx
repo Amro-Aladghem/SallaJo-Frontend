@@ -15,7 +15,7 @@ export default function StoreFooter({ store }: Props) {
         <img
           src={store.logoImageUrl}
           alt={store.name}
-          className="w-16 h-16 rounded-full border-2 border-white shadow-sm mb-3 object-cover"
+          className="w-16 h-16 rounded-sm border-2 border-white shadow-sm mb-3 object-cover"
         />
         <h3 className="font-bold text-lg text-gray-900 mb-2">{store.name}</h3>
         {store.description && (

@@ -61,7 +61,7 @@ export default function DiscountsPage() {
               isClickable
               linkTo={`/store/${slug}/products/${discount.product.id}`}
               isDiscount
-              discountPercent={discount.discountAmount ?? undefined}
+              discountAmount={discount.discountAmount ?? undefined}
             />
           ))}
         </div>

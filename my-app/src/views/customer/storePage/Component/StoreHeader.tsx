@@ -1,10 +1,15 @@
+import { useNavigate, useParams } from 'react-router-dom';
+import { getCartCount } from '@/libs/cart';
+
 interface Props {
   name: string;
   logoImageUrl: string;
 }
 
 export default function StoreHeader({ name, logoImageUrl }: Props) {
-  const cartCount = 0;
+  const navigate = useNavigate();
+  const { slug } = useParams<{ slug: string }>();
+  const cartCount = getCartCount();
 
   return (
     <header className="fixed top-0 z-30 bg-gradient-to-b from-white to-gray-50/80 backdrop-blur border-b border-gray-200 shadow-sm py-2.5 px-4 flex items-center justify-between w-full max-w-lg" style={{ left: '50%', transform: 'translateX(-50%)' }}>
@@ -16,7 +21,10 @@ export default function StoreHeader({ name, logoImageUrl }: Props) {
         </div>
       </div>
 
-      <button className="relative w-10 h-10 flex items-center justify-center">
+      <button
+        onClick={() => navigate(`/store/${slug}/cart`)}
+        className="relative w-10 h-10 flex items-center justify-center"
+      >
         <svg
           viewBox="0 0 32 32"
           className="w-7 h-7"

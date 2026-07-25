@@ -17,6 +17,8 @@ import CustomerOffersPage from '@/views/customer/offersPage/OffersPage';
 import CustomerDiscountsPage from '@/views/customer/discountsPage/DiscountsPage';
 import CustomerProductPage from '@/views/customer/productPage/ProductPage';
 import CustomerStoreInfoPage from '@/views/customer/storeInfoPage/StoreInfoPage';
+import CustomerCartPage from '@/views/customer/cartPage/CartPage';
+import CustomerCheckoutPage from '@/views/customer/checkoutPage/CheckoutPage';
 import CustomerLayout from '@/components/CustomerLayout';
 
 function App() {
@@ -46,6 +48,8 @@ function App() {
           <Route path="/store/:slug/discounts" element={<CustomerDiscountsPage />} />
           <Route path="/store/:slug/products/:id" element={<CustomerProductPage />} />
           <Route path="/store/:slug/info" element={<CustomerStoreInfoPage />} />
+          <Route path="/store/:slug/cart" element={<CustomerCartPage />} />
+          <Route path="/store/:slug/checkout" element={<CustomerCheckoutPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/seller/sign-up" replace />} />
       </Routes>

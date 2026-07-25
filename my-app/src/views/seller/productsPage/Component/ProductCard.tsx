@@ -8,10 +8,10 @@ interface Props {
   onClick?: () => void;
   linkTo?: string;
   isDiscount?: boolean;
-  discountPercent?: number;
+  discountAmount?: number;
 }
 
-export default function ProductCard({ product, isSeller = false, isClickable = true, onClick, linkTo, isDiscount = false, discountPercent }: Props) {
+export default function ProductCard({ product, isSeller = false, isClickable = true, onClick, linkTo, isDiscount = false, discountAmount }: Props) {
   const useLink = linkTo && isClickable;
   const showAsButton = isClickable && !linkTo;
   const Comp = useLink ? Link : showAsButton ? 'button' : 'div';
@@ -21,10 +21,10 @@ export default function ProductCard({ product, isSeller = false, isClickable = t
     ? { onClick, className: 'flex flex-col border border-gray-200 rounded-lg overflow-hidden bg-white hover:border-primary/30 hover:shadow-md transition-all text-right w-full cursor-pointer' }
     : { className: 'flex flex-col border border-gray-200 rounded-lg overflow-hidden bg-white' };
 
-  const finalDiscountPct = discountPercent ?? product.amountOfDiscount ?? 0;
-  const hasDiscount = isDiscount && finalDiscountPct > 0;
+  const finalDiscount = discountAmount ?? product.amountOfDiscount ?? 0;
+  const hasDiscount = isDiscount && finalDiscount > 0;
   const originalPrice = product.price ?? 0;
-  const discountedPrice = hasDiscount ? originalPrice * (1 - finalDiscountPct / 100) : originalPrice;
+  const discountedPrice = hasDiscount ? Math.max(0, originalPrice - finalDiscount) : originalPrice;
 
   return (
     <Comp {...compProps}>
@@ -52,7 +52,7 @@ export default function ProductCard({ product, isSeller = false, isClickable = t
         )}
         {hasDiscount && (
           <div className="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-sm">
-            {Math.round(finalDiscountPct)}% خصم
+            خصم {finalDiscount} د.أ
           </div>
         )}
       </div>

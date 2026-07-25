@@ -66,7 +66,7 @@ export default function StoreInfoPage() {
         <img
           src={store.logoImageUrl}
           alt={store.name}
-          className="w-24 h-24 rounded-full border-2 border-gray-200 shadow-sm mb-4 object-cover"
+          className="w-24 h-24 rounded-sm border-2 border-gray-200 shadow-sm mb-4 object-cover"
         />
         <h1 className="text-xl font-bold text-gray-900 mb-2">{store.name}</h1>
         {store.description && (

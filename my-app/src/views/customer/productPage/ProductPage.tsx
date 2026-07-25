@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ProductController } from '@/services/ProductController';
 import type { ProductFullInfoForCustomerDto } from '@/types/dtos';
 import { getCustomerStore } from '@/libs/customerStorage';
+import { getProductQuantity, addProductToCart } from '@/libs/cart';
 import Loader from '@/components/Loader';
 import ErrorPage from '@/components/ErrorPage';
 import NotFoundPage from '@/components/NotFoundPage';
@@ -14,8 +15,9 @@ export default function ProductPage() {
   const [product, setProduct] = useState<ProductFullInfoForCustomerDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [quantity, setQuantity] = useState(1);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const [showToast, setShowToast] = useState(false);
 
   const store = getCustomerStore();
 
@@ -33,13 +35,33 @@ export default function ProductPage() {
     load();
   }, [id]);
 
+  const initialQty = id ? getProductQuantity(id) : 0;
+  const [quantity, setQuantity] = useState(initialQty || 1);
+  const [inCart, setInCart] = useState(initialQty > 0);
+
+  useEffect(() => {
+    if (id) {
+      const q = getProductQuantity(id);
+      setQuantity(q || 1);
+      setInCart(q > 0);
+    }
+  }, [id]);
+
+  const handleAddToCart = useCallback(() => {
+    if (!id) return;
+    addProductToCart(id, quantity);
+    setInCart(true);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
+  }, [id, quantity]);
+
   if (loading) return <Loader />;
   if (error) return <ErrorPage />;
   if (!product) return <NotFoundPage message="المنتج غير موجود" />;
 
   const hasDiscount = product.amountOfDiscount != null && product.amountOfDiscount > 0;
   const originalPrice = product.price ?? 0;
-  const discountedPrice = hasDiscount ? originalPrice * (1 - product.amountOfDiscount! / 100) : originalPrice;
+  const discountedPrice = hasDiscount ? Math.max(0, originalPrice - product.amountOfDiscount!) : originalPrice;
 
   const allImages = [
     { imageLink: product.primaryImageLink },
@@ -70,7 +92,7 @@ export default function ProductPage() {
         />
         {hasDiscount && (
           <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-sm">
-            {Math.round(product.amountOfDiscount!)}% خصم
+            خصم {product.amountOfDiscount} د.أ
           </div>
         )}
         {allImages.length > 1 && (
@@ -145,11 +167,20 @@ export default function ProductPage() {
               <Plus className="h-4 w-4" />
             </button>
           </div>
-          <button className="flex-1 bg-primary text-white py-2.5 rounded-lg font-medium text-sm hover:bg-primary/90 transition-colors">
-            أضف إلى السلة
+          <button
+            onClick={handleAddToCart}
+            className="flex-1 bg-primary text-white py-2.5 rounded-lg font-medium text-sm hover:bg-primary/90 transition-colors"
+          >
+            {inCart ? 'تعديل الكمية في السلة' : 'أضف إلى السلة'}
           </button>
         </div>
       </div>
+
+      {showToast && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-lg transition-all">
+          تمت إضافة المنتج إلى السلة
+        </div>
+      )}
     </>
   );
 }
