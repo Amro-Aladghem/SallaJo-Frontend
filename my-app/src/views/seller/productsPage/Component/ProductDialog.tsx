@@ -163,9 +163,13 @@ export default function ProductDialog({ productId, open, onClose, onRefreshList 
     }
 
 
+    const targetImage = product.images.find((img) => img.id === targetId);
+    const wasPrimary = targetImage?.imageLink === primaryImageLink;
+
     const updateResult = await ProductController.updateImages(productId, {
       oldImageId: targetId,
       newImageLink: uploadResult.data,
+      isPrimaryImage: wasPrimary,
     });
 
     setUploadingImageId(null);
@@ -176,6 +180,7 @@ export default function ProductDialog({ productId, open, onClose, onRefreshList 
     }
 
     showToast('success', 'تم تحديث الصورة بنجاح');
+    setPrimaryImageLink(uploadResult.data);
     await fetchProduct();
   };
 
@@ -240,9 +245,16 @@ export default function ProductDialog({ productId, open, onClose, onRefreshList 
                         <button
                           key={img.id}
                           type="button"
-                          onClick={() => {
+                          onClick={async () => {
                             setSelectedImageIndex(i);
                             setPrimaryImageLink(img.imageLink);
+                            if (img.imageLink !== primaryImageLink) {
+                              await ProductController.updateImages(productId, {
+                                oldImageId: img.id,
+                                newImageLink: img.imageLink,
+                                isPrimaryImage: true,
+                              });
+                            }
                           }}
                           className={`flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden border-2 transition-colors ${
                             primaryImageLink === img.imageLink
