@@ -1,4 +1,4 @@
-import api, { type ApiResponse, type ApiResult } from '@/libs/api';
+import api, { type ApiResponse } from '@/libs/api';
 import type { DiscountInfoDto, DiscountShortInfoDto, UpdateDiscountDto } from '@/types/dtos';
 
 const baseUri = '/discounts';
@@ -24,10 +24,10 @@ export const DiscountService = {
     }
   },
 
-  async update(id: string, data: UpdateDiscountDto): Promise<ApiResponse<ApiResult>> {
+  async update(id: string, data: UpdateDiscountDto): Promise<ApiResponse<boolean>> {
     try {
-      const response = await api.put<ApiResult>(`${baseUri}/${id}`, data);
-      return { isSuccess: true, data: response.data };
+      const response = await api.put<boolean>(`${baseUri}/${id}`, data);
+      return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };
       return { isSuccess: false, error: message, statusCode };

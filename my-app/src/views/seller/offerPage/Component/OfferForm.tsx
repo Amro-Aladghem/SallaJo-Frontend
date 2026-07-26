@@ -50,6 +50,7 @@ export default function OfferForm({ onSubmit, saving }: Props) {
 
     if (!imageLink) newErrors.imageLink = 'صورة العرض مطلوبة';
     if (!title.trim()) newErrors.title = 'العنوان مطلوب';
+    if (!description.trim()) newErrors.description = 'الوصف مطلوب';
     if (!startDate) {
       newErrors.startDate = 'تاريخ البداية مطلوب';
     } else if (startDate < today) {
@@ -138,14 +139,15 @@ export default function OfferForm({ onSubmit, saving }: Props) {
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="of-desc">الوصف</Label>
+        <Label htmlFor="of-desc">الوصف <span className="text-red-500">*</span></Label>
         <Textarea
           id="of-desc"
           rows={3}
           className="bg-gray-50"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={(e) => { setDescription(e.target.value); setErrors((p) => ({ ...p, description: '' })); }}
         />
+        {errors.description && <p className="text-xs text-red-500">{errors.description}</p>}
       </div>
 
       <div className="space-y-1.5">

@@ -1,4 +1,4 @@
-import api, { type ApiResponse, type ApiResult } from '@/libs/api';
+import api, { type ApiResponse } from '@/libs/api';
 import type {
   AddProductDto,
   UpdateProductDto,
@@ -43,70 +43,80 @@ export const ProductController = {
     }
   },
 
-  async addProduct(data: AddProductDto): Promise<ApiResponse<ApiResult>> {
+  async addProduct(data: AddProductDto): Promise<ApiResponse<boolean>> {
     try {
-      const response = await api.post<ApiResult>(baseUri, data);
-      return { isSuccess: true, data: response.data };
+      const response = await api.post<boolean>(baseUri, data);
+      return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };
       return { isSuccess: false, error: message, statusCode };
     }
   },
 
-  async updateProduct(id: string, data: UpdateProductDto): Promise<ApiResponse<ApiResult>> {
+  async updateProduct(id: string, data: UpdateProductDto): Promise<ApiResponse<boolean>> {
     try {
-      const response = await api.put<ApiResult>(`${baseUri}/${id}`, data);
-      return { isSuccess: true, data: response.data };
+      const response = await api.put<boolean>(`${baseUri}/${id}`, data);
+      return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };
       return { isSuccess: false, error: message, statusCode };
     }
   },
 
-  async toggleAppear(id: string): Promise<ApiResponse<ApiResult>> {
+  async toggleAppear(id: string): Promise<ApiResponse<boolean>> {
     try {
-      const response = await api.put<ApiResult>(`${baseUri}/${id}/appear`);
-      return { isSuccess: true, data: response.data };
+      const response = await api.put<boolean>(`${baseUri}/${id}/appear`);
+      return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };
       return { isSuccess: false, error: message, statusCode };
     }
   },
 
-  async deleteProduct(id: string): Promise<ApiResponse<ApiResult>> {
+  async deleteProduct(id: string): Promise<ApiResponse<boolean>> {
     try {
-      const response = await api.put<ApiResult>(`${baseUri}/${id}/delete`);
-      return { isSuccess: true, data: response.data };
+      const response = await api.put<boolean>(`${baseUri}/${id}/delete`);
+      return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };
       return { isSuccess: false, error: message, statusCode };
     }
   },
 
-  async updateImages(id: string, data: UpdateImageDto): Promise<ApiResponse<ApiResult>> {
+  async updateImages(id: string, data: UpdateImageDto): Promise<ApiResponse<boolean>> {
     try {
-      const response = await api.put<ApiResult>(`${baseUri}/${id}/images`, data);
-      return { isSuccess: true, data: response.data };
+      const response = await api.put<boolean>(`${baseUri}/${id}/images`, data);
+      return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };
       return { isSuccess: false, error: message, statusCode };
     }
   },
 
-  async addDiscount(productId: string, data: AddDiscountDto): Promise<ApiResponse<ApiResult>> {
+  async addDiscount(productId: string, data: AddDiscountDto): Promise<ApiResponse<boolean>> {
     try {
-      const response = await api.post<ApiResult>(`${baseUri}/${productId}/discounts`, data);
-      return { isSuccess: true, data: response.data };
+      const response = await api.post<boolean>(`${baseUri}/${productId}/discounts`, data);
+      return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };
       return { isSuccess: false, error: message, statusCode };
     }
   },
 
-  async toggleDiscountStatus(productId: string, discountId: string): Promise<ApiResponse<ApiResult>> {
+  async toggleDiscountStatus(productId: string, discountId: string): Promise<ApiResponse<boolean>> {
     try {
-      const response = await api.put<ApiResult>(`${baseUri}/${productId}/discounts/${discountId}`);
-      return { isSuccess: true, data: response.data };
+      const response = await api.put<boolean>(`${baseUri}/${productId}/discounts/${discountId}`);
+      return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+
+  async updateStock(id: string, stockChange: number): Promise<ApiResponse<boolean>> {
+    try {
+      const response = await api.put<boolean>(`${baseUri}/${id}/stock`, null, { params: { stockChange } });
+      return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };
       return { isSuccess: false, error: message, statusCode };

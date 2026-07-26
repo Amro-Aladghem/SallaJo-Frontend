@@ -1,4 +1,4 @@
-import api, { type ApiResponse, type ApiResult } from '@/libs/api';
+import api, { type ApiResponse } from '@/libs/api';
 import type {
   AddInitialStoreInfoDto,
   InitialStoreInfoDto,
@@ -74,33 +74,33 @@ export const StoreService = {
     }
   },
 
-  async updateStore(id: string, data: UpdateStoreInfoDto, image?: File): Promise<ApiResponse<ApiResult>> {
+  async updateStore(id: string, data: UpdateStoreInfoDto, image?: File): Promise<ApiResponse<boolean>> {
     try {
       const formData = toFormData(data, image);
-      const response = await api.put<ApiResult>(`${baseUri}/${id}`, formData, {
+      const response = await api.put<boolean>(`${baseUri}/${id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      return { isSuccess: true, data: response.data };
+      return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };
       return { isSuccess: false, error: message, statusCode };
     }
   },
 
-  async addOffer(data: AddOfferDto): Promise<ApiResponse<ApiResult>> {
+  async addOffer(data: AddOfferDto): Promise<ApiResponse<boolean>> {
     try {
-      const response = await api.post<ApiResult>(`${baseUri}/offer`, data);
-      return { isSuccess: true, data: response.data };
+      const response = await api.post<boolean>(`${baseUri}/offer`, data);
+      return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };
       return { isSuccess: false, error: message, statusCode };
     }
   },
 
-  async toggleOfferStatus(id: string): Promise<ApiResponse<ApiResult>> {
+  async toggleOfferStatus(id: string): Promise<ApiResponse<boolean>> {
     try {
-      const response = await api.put<ApiResult>(`${baseUri}/offer/${id}/status`);
-      return { isSuccess: true, data: response.data };
+      const response = await api.put<boolean>(`${baseUri}/offer/${id}/status`);
+      return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };
       return { isSuccess: false, error: message, statusCode };
@@ -127,10 +127,10 @@ export const StoreService = {
     }
   },
 
-  async updateOffer(id: string, data: UpdateOfferDto): Promise<ApiResponse<ApiResult>> {
+  async updateOffer(id: string, data: UpdateOfferDto): Promise<ApiResponse<boolean>> {
     try {
-      const response = await api.put<ApiResult>(`${baseUri}/offers/${id}`, data);
-      return { isSuccess: true, data: response.data };
+      const response = await api.put<boolean>(`${baseUri}/offers/${id}`, data);
+      return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };
       return { isSuccess: false, error: message, statusCode };

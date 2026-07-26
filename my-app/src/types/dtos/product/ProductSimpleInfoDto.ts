@@ -6,4 +6,5 @@ export interface ProductSimpleInfoDto {
   description: string;
   sequenceProductNumber: number | null;
   amountOfDiscount: number | null;
+  stock: number | null;
 }

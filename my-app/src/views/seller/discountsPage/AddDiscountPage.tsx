@@ -97,7 +97,7 @@ export default function AddDiscountPage() {
     const result = await ProductController.addDiscount(productId, data);
     if (result.isSuccess) {
       showToast('success', 'تم إضافة الخصم بنجاح');
-      setTimeout(() => navigate('/discounts'), 1000);
+      setTimeout(() => navigate('/seller/discounts'), 1000);
     } else {
       showToast('error', `فشل إضافة الخصم`);
     }
@@ -116,7 +116,7 @@ export default function AddDiscountPage() {
         <p className="text-sm text-gray-500 max-w-xs">
           قم بحذف الخصم القديم أولاً قبل إضافة خصم جديد
         </p>
-        <Button variant="outline" onClick={() => navigate('/discounts')}>
+        <Button variant="outline" onClick={() => navigate('/seller/discounts')}>
           <ArrowLeft className="ml-2 h-4 w-4" />
           الذهاب إلى الخصومات
         </Button>

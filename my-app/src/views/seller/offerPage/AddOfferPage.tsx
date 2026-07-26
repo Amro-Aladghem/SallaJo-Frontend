@@ -118,7 +118,7 @@ export default function AddOfferPage() {
 
       <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-gray-900">اختر المنتجات</h2>
+          <h2 className="text-sm font-bold text-gray-900">اختر المنتجات المشمولة اختيار</h2>
           <span className="text-xs text-gray-500">{selectedIds.length} منتج</span>
         </div>
 

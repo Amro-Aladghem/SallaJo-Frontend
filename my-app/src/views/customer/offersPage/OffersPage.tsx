@@ -6,7 +6,6 @@ import { getCustomerStore } from '@/libs/customerStorage';
 import { isOfferInCart, addOfferToCart, removeOfferFromCart } from '@/libs/cart';
 import Loader from '@/components/Loader';
 import ErrorPage from '@/components/ErrorPage';
-import NotFoundPage from '@/components/NotFoundPage';
 import ProductCard from '@/views/seller/productsPage/Component/ProductCard';
 import { ArrowRight } from 'lucide-react';
 
@@ -45,7 +44,6 @@ export default function OffersPage() {
 
   if (loading) return <Loader />;
   if (error) return <ErrorPage />;
-  if (!offers.length) return <NotFoundPage message="لا توجد عروض حالياً" />;
 
   return (
     <>
@@ -53,14 +51,15 @@ export default function OffersPage() {
         <button onClick={() => navigate(`/store/${slug}`)} className="text-gray-600 hover:text-gray-900">
           <ArrowRight className="h-5 w-5" />
         </button>
-        {store && (
-          <>
-            <img src={store.logoImageUrl} alt={store.name} className="w-8 h-8 rounded-full border border-gray-200 object-cover" />
-            <h1 className="font-bold text-base text-gray-900 truncate">{store.name}</h1>
-          </>
-        )}
+        <img src={store?.logoImageUrl} alt={store?.name} className="w-8 h-8 rounded-full border border-gray-200 object-cover" />
+        <h1 className="font-bold text-base text-gray-900 truncate">{store?.name}</h1>
       </header>
 
+      {!offers.length ? (
+        <div className="text-center py-20">
+          <p className="text-gray-400 text-base">لا توجد عروض حالياً</p>
+        </div>
+      ) : (
       <div className="px-4 py-4">
         <h1 className="text-xl font-bold text-gray-900 mb-4">العروض</h1>
         <div className="space-y-6">
@@ -130,6 +129,7 @@ export default function OffersPage() {
         ))}
         </div>
       </div>
+      )}
     </>
   );
 }

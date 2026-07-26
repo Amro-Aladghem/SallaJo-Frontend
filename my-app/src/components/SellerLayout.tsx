@@ -15,7 +15,7 @@ export default function SellerLayout() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 md:pb-0">
+    <div className="min-h-screen bg-gray-50 pt-18 md:pt-0 pb-20 md:pb-0">
       <DashboardNavbar store={user.store} person={user.person} />
       <Outlet />
     </div>

@@ -1,14 +1,17 @@
 import { useEffect, useState, useCallback } from 'react';
 import { StoreService } from '@/services/StoreService';
 import type { OfferFullInfoDto } from '@/types/dtos';
+import { RefreshCw, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 import Loader from '@/components/Loader';
 import ErrorPage from '@/components/ErrorPage';
-import NotFoundPage from '@/components/NotFoundPage';
 import Toast from '@/components/ui/toast';
 import OfferCard from './Component/OfferCard';
 import UpdateOfferDialog from './Component/UpdateOfferDialog';
 
 export default function OffersPage() {
+  const navigate = useNavigate();
   const [offers, setOffers] = useState<OfferFullInfoDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -58,26 +61,39 @@ export default function OffersPage() {
 
   if (loading) return <Loader />;
   if (error) return <ErrorPage />;
-  if (offers.length === 0) return <NotFoundPage message="لا توجد عروض حالياً" />;
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-gray-900">العروض</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-xl font-bold text-gray-900">العروض</h1>
+          <Button variant="ghost" size="sm" onClick={fetchOffers}>
+            <RefreshCw className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/seller/offers/add')}>
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
         <span className="text-xs text-gray-500">{offers.length} عرض</span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {offers.map((offer) => (
-          <OfferCard
-            key={offer.id}
-            offer={offer}
-            onToggleStatus={handleToggleStatus}
-            onUpdate={setUpdateOffer}
-            toggling={toggling}
-          />
-        ))}
-      </div>
+      {offers.length === 0 ? (
+        <div className="text-center py-16">
+          <p className="text-gray-400">لم تقم بإضافة أية عروض بعد</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {offers.map((offer) => (
+            <OfferCard
+              key={offer.id}
+              offer={offer}
+              onToggleStatus={handleToggleStatus}
+              onUpdate={setUpdateOffer}
+              toggling={toggling}
+            />
+          ))}
+        </div>
+      )}
 
       {updateOffer && (
         <UpdateOfferDialog

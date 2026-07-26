@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
-import {SellerService} from '@/services/SellerService';
+import { useNavigate } from 'react-router-dom';
+import { SellerService } from '@/services/SellerService';
 import { ToolService } from '@/services/ToolService';
+import { useAuth } from '@/hooks/useAuth';
 import type { PersonInfoDto, UpdatePersonDto } from '@/types/dtos';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,9 +10,11 @@ import { Label } from '@/components/ui/label';
 import Loader from '@/components/Loader';
 import ErrorPage from '@/components/ErrorPage';
 import Toast from '@/components/ui/toast';
-import { User, Save, RefreshCw, Camera, Loader2 } from 'lucide-react';
+import { User, Save, RefreshCw, Camera, Loader2, LogOut } from 'lucide-react';
 
 export default function PersonInfoPage() {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
   const [info, setInfo] = useState<PersonInfoDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -208,6 +212,11 @@ export default function PersonInfoPage() {
       <Button onClick={handleSave} disabled={saving} className="w-full">
         <Save className="ml-2 h-4 w-4" />
         {saving ? 'جاري الحفظ...' : 'حفظ التغييرات'}
+      </Button>
+
+      <Button variant="outline" className="w-full border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600" onClick={() => { logout(); navigate('/seller/sign-in', { replace: true }); }}>
+        <LogOut className="ml-2 h-4 w-4" />
+        تسجيل الخروج
       </Button>
     </div>
   );

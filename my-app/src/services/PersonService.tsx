@@ -1,4 +1,4 @@
-import api, { type ApiResponse, type ApiResult } from '@/libs/api';
+import api, { type ApiResponse } from '@/libs/api';
 import type { PersonAuthDto, PersonAuthResponseDto, PersonInfoDto, UpdatePersonDto } from '@/types/dtos';
 
 const baseUri = '/persons';
@@ -24,10 +24,10 @@ export const PersonService = {
     }
   },
 
-  async activate(activationCode: string): Promise<ApiResponse<ApiResult>> {
+  async activate(activationCode: string): Promise<ApiResponse<boolean>> {
     try {
-      const response = await api.put<ApiResult>(`${baseUri}/activate`, null, { params: { activationCode } });
-      return { isSuccess: true, data: response.data };
+      const response = await api.put<boolean>(`${baseUri}/activate`, null, { params: { activationCode } });
+      return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };
       return { isSuccess: false, error: message, statusCode };

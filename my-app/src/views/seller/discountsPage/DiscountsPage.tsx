@@ -97,11 +97,21 @@ export default function DiscountsPage() {
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
                   <span className="text-gray-500">قيمة الخصم</span>
                   <span className="text-gray-900 font-medium">
-                    {discount.discountAmount ?? '---'}
+                    {discount.discountAmount != null ? `${discount.discountAmount} د.أ` : '---'}
                   </span>
-                  <span className="text-gray-500">الحد الأدنى</span>
+                  <span className="text-gray-500">السعر</span>
                   <span className="text-gray-900 font-medium">
-                    {discount.leastAmountNumber ?? '---'}
+                    {discount.product.price != null ? `${discount.product.price} د.أ` : '---'}
+                  </span>
+                  <span className="text-gray-500">السعر بعد الخصم</span>
+                  <span className="text-primary font-bold">
+                    {discount.product.price != null && discount.discountAmount != null
+                      ? `${Math.max(0, discount.product.price - discount.discountAmount)} د.أ`
+                      : '---'}
+                  </span>
+                  <span className="text-gray-500">الحد الأدنى للطلب</span>
+                  <span className="text-gray-900 font-medium">
+                    {discount.leastAmountNumber != null ? `${discount.leastAmountNumber} قطعة` : '---'}
                   </span>
                   <span className="text-gray-500">تاريخ البداية</span>
                   <span className="text-gray-900 font-medium">

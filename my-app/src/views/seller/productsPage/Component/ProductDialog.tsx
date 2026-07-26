@@ -14,7 +14,6 @@ import { Separator } from '@/components/ui/separator';
 import Toast from '@/components/ui/toast';
 import Loader from '@/components/Loader';
 import ErrorPage from '@/components/ErrorPage';
-import ConfirmDialog from '@/components/ConfirmDialog';
 import ProductImagesSlider from './ProductImagesSlider';
 import { ProductController } from '@/services/ProductController';
 import { ToolService } from '@/services/ToolService';
@@ -47,7 +46,7 @@ export default function ProductDialog({ productId, open, onClose, onRefreshList 
   const [saving, setSaving] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [uploadingImageId, setUploadingImageId] = useState<string | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [toast, setToast] = useState<{ open: boolean; type: string; message: string }>({
     open: false,
     type: '',
@@ -127,7 +126,6 @@ export default function ProductDialog({ productId, open, onClose, onRefreshList 
   const handleDelete = async () => {
     if (!product) return;
     setSaving(true);
-    setConfirmDelete(false);
     const result = await ProductController.deleteProduct(productId);
     if (result.isSuccess) {
       showToast('success', 'تم حذف المنتج بنجاح');
@@ -351,7 +349,7 @@ export default function ProductDialog({ productId, open, onClose, onRefreshList 
                   <div className="space-y-1.5">
                     <Label htmlFor="pd-stock">
                       <Package className="h-3 w-3 inline ml-1" />
-                      المخزون
+                       الكمية بأمكانه ترك فاضي اذا ما بتعرف
                     </Label>
                     <Input
                       id="pd-stock"
@@ -382,14 +380,25 @@ export default function ProductDialog({ productId, open, onClose, onRefreshList 
                     )}
                     {isAcceptedToAppear ? 'إخفاء' : 'إظهار'}
                   </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={() => setConfirmDelete(true)}
-                    disabled={saving}
-                  >
-                    <Trash2 className="ml-2 h-4 w-4" />
-                    حذف
-                  </Button>
+                  {!showDeleteConfirm ? (
+                    <Button
+                      variant="destructive"
+                      onClick={() => setShowDeleteConfirm(true)}
+                      disabled={saving}
+                    >
+                      <Trash2 className="ml-2 h-4 w-4" />
+                      حذف
+                    </Button>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Button variant="outline" onClick={() => setShowDeleteConfirm(false)} className="flex-1">
+                        لا
+                      </Button>
+                      <Button variant="destructive" onClick={handleDelete} disabled={saving} className="flex-1">
+                        نعم
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </>

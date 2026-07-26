@@ -92,7 +92,7 @@ export default function SignUpForm() {
     if (result.isSuccess) {
       setPerson(result.data);
       showToast('success', 'تم إنشاء الحساب بنجاح');
-      setTimeout(() => navigate('/seller/initial-info'), 1500);
+      setTimeout(() => navigate('/seller/dashboard'), 1500);
     } else {
       showToast('error', `فشل انشاء الحساب الرجاء اعادة المحاولة`);
     }

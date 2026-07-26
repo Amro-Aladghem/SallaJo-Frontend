@@ -1,4 +1,4 @@
-import api, { type ApiResponse, type ApiResult } from '@/libs/api';
+import api, { type ApiResponse, type AddInitialInfoResult } from '@/libs/api';
 import type { SellerAuthInfoDto, AddInitialPersonInfoDto, PersonInfoDto, UpdatePersonDto } from '@/types/dtos';
 
 const baseUri = '/sellers';
@@ -14,9 +14,9 @@ export const SellerService = {
     }
   },
 
-  async addInitialInfo(data: AddInitialPersonInfoDto): Promise<ApiResponse<ApiResult>> {
+  async addInitialInfo(data: AddInitialPersonInfoDto): Promise<ApiResponse<string>> {
     try {
-      const response = await api.post<ApiResult>(`${baseUri}/info/initial`, data);
+      const response = await api.post<string>(`${baseUri}/info/initial`, data);
       return { isSuccess: true, data: response.data };
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };
@@ -34,10 +34,10 @@ export const SellerService = {
     }
   },
 
-  async updateInfo(data: UpdatePersonDto): Promise<ApiResponse<ApiResult>> {
+  async updateInfo(data: UpdatePersonDto): Promise<ApiResponse<boolean>> {
     try {
-      const response = await api.put<ApiResult>(`${baseUri}/info`, data);
-      return { isSuccess: true, data: response.data };
+      const response = await api.put<boolean>(`${baseUri}/info`, data);
+      return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };
       return { isSuccess: false, error: message, statusCode };

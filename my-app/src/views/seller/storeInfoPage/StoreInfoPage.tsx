@@ -13,7 +13,7 @@ import { Switch } from '@/components/ui/switch';
 import Loader from '@/components/Loader';
 import ErrorPage from '@/components/ErrorPage';
 import Toast from '@/components/ui/toast';
-import { Store, Save, RefreshCw, Camera, Loader2 } from 'lucide-react';
+import { Store, Save, RefreshCw, Camera, Loader2, Copy } from 'lucide-react';
 
 const colorHex: Record<string, string> = {
   أحمر: '#FF0000', أزرق: '#0000FF', أصفر: '#FFFF00', أخضر: '#008000',
@@ -29,8 +29,8 @@ function getColorHex(colorId: number): string {
 }
 
 export default function StoreInfoPage() {
-  const { user } = useAuth();
-  const [store, setStore] = useState<StoreInfoForSellerDto | null>(null);
+  const { user, setStore: setContextStore } = useAuth();
+  const [store, setLocalStore] = useState<StoreInfoForSellerDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -65,12 +65,25 @@ export default function StoreInfoPage() {
 
   const storeId = user.seller?.storeId;
 
+  const storeUrl = store?.slug ? `https://sallahjo.taskalyze.com/store/${store.slug}` : '---';
+
+  const handleCopyLink = async () => {
+    if (!store?.slug) return;
+    try {
+      await navigator.clipboard.writeText(storeUrl);
+      showToast('success', 'تم نسخ الرابط');
+    } catch {
+      showToast('error', 'فشل نسخ الرابط');
+    }
+  };
+
   const fetchStore = async () => {
     setLoading(true);
     setError(false);
     const result = await StoreService.getMyStore();
     if (result.isSuccess) {
-      setStore(result.data);
+      setContextStore(result.data);
+      setLocalStore(result.data);
       setLogoUrl(result.data.logoImageUrl);
       setCoverUrl(result.data.coverStoreImageLink ?? '');
       setName(result.data.name);
@@ -209,7 +222,7 @@ export default function StoreInfoPage() {
             <img
               src={logoUrl}
               alt={store.name}
-              className="w-24 h-24 rounded-full object-cover border border-gray-200"
+              className="w-24 h-24 rounded-lg object-cover border border-gray-200"
             />
             <button
               type="button"
@@ -413,15 +426,20 @@ export default function StoreInfoPage() {
       <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-3">
         <h2 className="text-sm font-bold text-gray-500">معلومات إضافية</h2>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="si-slug">رابط متجرك</Label>
-          <Input
-            id="si-slug"
-            value={store.slug ? `https://sallahjo.taskalyze.com/stores/${store.slug}` : '---'}
-            disabled
-            className="bg-gray-50 text-gray-900"
-          />
-        </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="si-slug">رابط متجرك</Label>
+            <div className="flex gap-2">
+              <Input
+                id="si-slug"
+                value={storeUrl}
+                disabled
+                className="bg-gray-50 text-gray-900 flex-1"
+              />
+              <Button variant="outline" size="icon" onClick={handleCopyLink} className="shrink-0">
+                <Copy className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
 
         <div className="space-y-1.5">
           <Label htmlFor="si-activated">حالة التفعيل</Label>

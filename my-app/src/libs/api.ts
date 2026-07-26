@@ -17,7 +17,8 @@ export interface UploadImageResult {
   uploadedImageUrl: string;
 }
 
-export interface ApiResult {
+export interface AddInitialInfoResult {
+  id: string;
   isDone: boolean;
 }
 

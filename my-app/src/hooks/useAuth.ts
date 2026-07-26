@@ -41,5 +41,6 @@ export function useAuth() {
     setPerson,
     setSeller,
     setStore,
+    setUser,
   };
 }

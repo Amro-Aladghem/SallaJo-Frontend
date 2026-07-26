@@ -71,7 +71,11 @@ export default function StorePage() {
   if (storeError || !store) return <ErrorPage />;
 
   return (
-    <div className="flex-1 w-full max-w-lg mx-auto bg-white md:border-x border-gray-200 min-h-screen relative" dir="rtl" lang="ar">
+    <div
+      className="flex-1 w-full max-w-lg mx-auto bg-white md:border-x border-gray-200 min-h-screen relative"
+      dir="rtl" lang="ar"
+      style={{ '--color-primary': store.primaryColorCode } as React.CSSProperties}
+    >
       <StoreHeader name={store.name} logoImageUrl={store.logoImageUrl} />
 
       <div className="pt-16 pb-14">
