@@ -20,6 +20,7 @@ export default function CartPage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [, refresh] = useState(0);
+  const [stockPopup, setStockPopup] = useState<string | null>(null);
 
   const store = getCustomerStore();
   const cart = getCart();
@@ -41,6 +42,14 @@ export default function CartPage() {
     .filter((r): r is CartOfferRow => r !== null);
 
   const handleInc = (id: string) => {
+    const product = allProducts.find((p) => p.id === id);
+    const maxStock = store?.isAcceptedToShowStoke && product?.stock != null ? product.stock : 99;
+    const currentQty = cart.products.find((p) => p.id === id)?.quantity || 0;
+    if (currentQty >= maxStock) {
+      setStockPopup(`الكمية لا تكفي — أقصى كمية متاحة: ${maxStock}`);
+      setTimeout(() => setStockPopup(null), 3000);
+      return;
+    }
     updateProductQuantity(id, 1);
     refresh((n) => n + 1);
   };
@@ -194,6 +203,11 @@ export default function CartPage() {
           </>
         )}
       </div>
+      {stockPopup && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-lg transition-all">
+          {stockPopup}
+        </div>
+      )}
     </>
   );
 }

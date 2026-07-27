@@ -95,7 +95,7 @@ export default function StorePage() {
           slug={slug!}
           onViewAll={() => navigate(`/store/${slug}/discounts`)}
         />
-        <ProductsSection slug={slug!} />
+        <ProductsSection slug={slug!} storeAcceptsShowStock={store.isAcceptedToShowStoke} />
 
         <StoreFooter store={store} />
       </div>

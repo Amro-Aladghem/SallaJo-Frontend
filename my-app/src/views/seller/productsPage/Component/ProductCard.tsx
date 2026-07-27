@@ -9,9 +9,10 @@ interface Props {
   linkTo?: string;
   isDiscount?: boolean;
   discountAmount?: number;
+  showOutOfStock?: boolean;
 }
 
-export default function ProductCard({ product, isSeller = false, isClickable = true, onClick, linkTo, isDiscount = false, discountAmount }: Props) {
+export default function ProductCard({ product, isSeller = false, isClickable = true, onClick, linkTo, isDiscount = false, discountAmount, showOutOfStock }: Props) {
   const useLink = linkTo && isClickable;
   const showAsButton = isClickable && !linkTo;
   const Comp = useLink ? Link : showAsButton ? 'button' : 'div';
@@ -74,6 +75,9 @@ export default function ProductCard({ product, isSeller = false, isClickable = t
               <span className="text-gray-900 font-bold text-sm">
                 {product.price ? `${product.price} د.أ` : '---'}
               </span>
+            )}
+            {!isSeller && showOutOfStock && product.stock === 0 && (
+              <span className="text-black text-[10px] font-medium mt-1">نفذت الكمية</span>
             )}
           </div>
           {isSeller ? (

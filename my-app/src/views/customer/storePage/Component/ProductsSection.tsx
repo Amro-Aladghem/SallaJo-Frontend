@@ -13,9 +13,10 @@ import Loader from '@/components/Loader';
 
 interface Props {
   slug: string;
+  storeAcceptsShowStock: boolean;
 }
 
-export default function ProductsSection({ slug }: Props) {
+export default function ProductsSection({ slug, storeAcceptsShowStock }: Props) {
   const [products, setProducts] = useState<ProductSimpleInfoDto[]>(() => getCustomerProducts(slug) || []);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -79,6 +80,7 @@ export default function ProductsSection({ slug }: Props) {
               isClickable
               linkTo={`/store/${slug}/products/${product.id}`}
               isDiscount={!!product.amountOfDiscount}
+              showOutOfStock={storeAcceptsShowStock}
             />
           ))}
         </div>

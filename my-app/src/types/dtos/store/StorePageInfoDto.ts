@@ -14,4 +14,5 @@ export interface StorePageInfoDto {
   isActivatedStore: boolean | null;
   countryId: number | null;
   slug: string | null;
+  isAcceptedToShowStoke: boolean;
 }

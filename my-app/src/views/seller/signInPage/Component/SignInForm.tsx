@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import Toast from '@/components/ui/toast';
+import Loader from '@/components/Loader';
 import { PersonService } from '@/services/PersonService';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
@@ -12,7 +13,7 @@ import { Loader2, Eye, EyeOff } from 'lucide-react';
 export default function SignInForm() {
   const navigate = useNavigate();
   const { setPerson } = useAuth();
-
+  const [initialLoading, setInitialLoading] = useState(true);
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -22,6 +23,7 @@ export default function SignInForm() {
     type: '',
     message: '',
   });
+
 
   const showToast = (type: string, message: string) => {
     setToast({ open: true, type, message });
@@ -62,6 +64,22 @@ export default function SignInForm() {
 
     setLoading(false);
   };
+
+  useEffect(() => {
+    const tryRefresh = async () => {
+      const result = await PersonService.refreshToken();
+      if (result.isSuccess) {
+        setPerson(result.data);
+        navigate('/seller/auth', { replace: true });
+        return;
+      }
+      setInitialLoading(false);
+    };
+    tryRefresh();
+  }, [navigate, setPerson]);
+
+
+  if (initialLoading) return <Loader />;
 
   return (
     <>

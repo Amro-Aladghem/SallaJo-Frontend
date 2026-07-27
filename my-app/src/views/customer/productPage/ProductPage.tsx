@@ -18,6 +18,7 @@ export default function ProductPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const [showToast, setShowToast] = useState(false);
+  const [stockPopup, setStockPopup] = useState<string | null>(null);
 
   const store = getCustomerStore();
 
@@ -27,6 +28,7 @@ export default function ProductPage() {
       const result = await ProductController.getProductPublic(id);
       if (result.isSuccess) {
         setProduct(result.data);
+        console.log('Product data:', result.data); // Log the product data for debugging
       } else {
         setError(true);
       }
@@ -49,11 +51,17 @@ export default function ProductPage() {
 
   const handleAddToCart = useCallback(() => {
     if (!id) return;
+    if (store?.isAcceptedToShowStoke && product?.stoke != null && quantity > product.stoke) {
+      setStockPopup(`الكمية لا تكفي — أقصى كمية متاحة: ${product.stoke}`);
+      setTimeout(() => setStockPopup(null), 3000);
+      setQuantity(product.stoke);
+      return;
+    }
     addProductToCart(id, quantity);
     setInCart(true);
     setShowToast(true);
     setTimeout(() => setShowToast(false), 2000);
-  }, [id, quantity]);
+  }, [id, quantity, product, store]);
 
   if (loading) return <Loader />;
   if (error) return <ErrorPage />;
@@ -70,7 +78,7 @@ export default function ProductPage() {
   const currentImage = allImages.length > currentImageIndex ? allImages[currentImageIndex].imageLink : product.primaryImageLink;
 
   const minQty = 1;
-  const maxQty = product.stoke ?? 99;
+  const maxQty = store?.isAcceptedToShowStoke && product.stoke != null ? product.stoke : 99;
 
   return (
     <>
@@ -141,9 +149,13 @@ export default function ProductPage() {
           <p className="text-gray-600 leading-relaxed text-sm">{product.description}</p>
         )}
 
-        {product.isAcceptToShowTheStock && product.stoke != null && (
-          <p className="text-xs text-gray-500">
-            المخزون: <span className="font-medium text-gray-700">{product.stoke}</span> قطعة
+        {store?.isAcceptedToShowStoke && product.stoke != null && (
+          <p className="text-base text-gray-500">
+            {product.stoke === 0 ? (
+              <span className="text-black font-medium">نفذت الكمية</span>
+            ) : (
+              <>الكمية المتوفرة: <span className="font-medium text-gray-700">{product.stoke}</span></>
+            )}
           </p>
         )}
 
@@ -179,6 +191,11 @@ export default function ProductPage() {
       {showToast && (
         <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-lg transition-all">
           تمت إضافة المنتج إلى السلة
+        </div>
+      )}
+      {stockPopup && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-lg transition-all">
+          {stockPopup}
         </div>
       )}
     </>
