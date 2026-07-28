@@ -78,6 +78,8 @@ export default function CartPage() {
   };
 
   const productsTotal = productRows.reduce((sum, r) => sum + getEffectivePrice(r.info) * r.quantity, 0);
+  const offersTotal = offerRows.reduce((sum, r) => sum + (r.info.offerPrice ?? 0), 0);
+  const grandTotal = productsTotal + offersTotal;
   const itemCount = getCartCount();
   const cartCount = getCartCount();
 
@@ -190,7 +192,7 @@ export default function CartPage() {
             <div className="border-t border-gray-200 pt-4">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-500 font-medium">السعر الكلي للمنتجات</span>
-                <span className="font-bold text-gray-900 text-base">{productsTotal.toFixed(1)} د.أ</span>
+                <span className="font-bold text-gray-900 text-base">{grandTotal.toFixed(1)} د.أ</span>
               </div>
             </div>
 

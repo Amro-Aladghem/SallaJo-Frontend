@@ -1,4 +1,4 @@
-import api, { type ApiResponse, type AddInitialInfoResult } from '@/libs/api';
+import api, { type ApiResponse } from '@/libs/api';
 import type { SellerAuthInfoDto, AddInitialPersonInfoDto, PersonInfoDto, UpdatePersonDto } from '@/types/dtos';
 
 const baseUri = '/sellers';

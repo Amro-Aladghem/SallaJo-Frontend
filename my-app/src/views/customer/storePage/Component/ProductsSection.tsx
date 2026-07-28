@@ -4,7 +4,6 @@ import { StoreService } from '@/services/StoreService';
 import type { ProductSimpleInfoDto } from '@/types/dtos';
 import {
   setCustomerProducts,
-  appendCustomerProducts,
   getCustomerProducts,
 } from '@/libs/customerStorage';
 import ProductCard from '@/views/seller/productsPage/Component/ProductCard';

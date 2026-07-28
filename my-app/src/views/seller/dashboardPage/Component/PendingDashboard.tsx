@@ -36,7 +36,7 @@ function clearStage() {
 
 export default function PendingDashboard() {
   const navigate = useNavigate();
-  const { user, setPerson } = useAuth();
+  const { user } = useAuth();
 
   const currentStage = getStage() || 'initial';
   const [stage, setStageState] = useState<Stage>(currentStage);
@@ -200,16 +200,16 @@ export default function PendingDashboard() {
           {step === 1 && (
             <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
               <div className="flex justify-center">
-                <User className="h-14 w-14 text-primary/40" />
+                <User className="h-14 w-14 text-primary/40" />س
               </div>
 
               <div className="space-y-1.5">
                 <Label>الاسم الأول</Label>
-                <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="محمد" />
+                <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="اسمك الأول" />
               </div>
               <div className="space-y-1.5">
                 <Label>اسم العائلة</Label>
-                <Input value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="أحمد" />
+                <Input value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="اسم العائلة" />
               </div>
               <div className="space-y-1.5">
                 <Label>المحافظة</Label>

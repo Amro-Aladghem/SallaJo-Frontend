@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SignUpPage from '@/views/seller/signUpPage/SignUpPage';
 import SignInPage from '@/views/seller/signInPage/SignInPage';
 import AuthPage from '@/views/seller/authPage/AuthPage';
@@ -19,12 +19,17 @@ import SupportPage from '@/views/seller/supportPage/SupportPage';
 import PromptsPage from '@/views/seller/promptsPage/PromptsPage';
 import StorePage from '@/views/customer/storePage/StorePage';
 import CustomerOffersPage from '@/views/customer/offersPage/OffersPage';
+import AdminSignInPage from '@/views/admin/signInPage/SignInPage';
+import AdminDashboard from '@/views/admin/dashboardPage/DashboardPage';
 import CustomerDiscountsPage from '@/views/customer/discountsPage/DiscountsPage';
 import CustomerProductPage from '@/views/customer/productPage/ProductPage';
 import CustomerStoreInfoPage from '@/views/customer/storeInfoPage/StoreInfoPage';
 import CustomerCartPage from '@/views/customer/cartPage/CartPage';
 import CustomerCheckoutPage from '@/views/customer/checkoutPage/CheckoutPage';
 import CustomerLayout from '@/components/CustomerLayout';
+import NotFoundPage from '@/components/NotFoundPage';
+import MainPage from '@/views/main/MainPage';
+import MainSupportPage from '@/views/main/SupportPage';
 
 function App() {
   return (
@@ -52,7 +57,10 @@ function App() {
           </Route>
         </Route>
 
-        <Route path="/" element={<Navigate to="/store/demo" replace />} />
+        <Route path="/admin/sign-in" element={<AdminSignInPage />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/" element={<MainPage />} />
+        <Route path="/support" element={<MainSupportPage />} />
         <Route path="/store/:slug" element={<StorePage />} />
         <Route element={<CustomerLayout />}>
           <Route path="/store/:slug/offers" element={<CustomerOffersPage />} />
@@ -62,7 +70,7 @@ function App() {
           <Route path="/store/:slug/cart" element={<CustomerCartPage />} />
           <Route path="/store/:slug/checkout" element={<CustomerCheckoutPage />} />
         </Route>
-        <Route path="*" element={<Navigate to="/seller/sign-up" replace />} />
+        <Route path="*" element={<NotFoundPage message="الصفحة غير موجودة" />} />
       </Routes>
     </BrowserRouter>
   );

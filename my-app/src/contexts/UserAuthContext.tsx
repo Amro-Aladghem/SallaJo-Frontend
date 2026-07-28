@@ -7,6 +7,7 @@ import type {
 import {
   createContext,
   useState,
+  useMemo,
   type Dispatch,
   type PropsWithChildren,
   type SetStateAction,
@@ -78,11 +79,11 @@ export default function UserAuthProvider({
     sessionStorage.removeItem("store");
   };
 
-  const contextValue: UserAuthContextType = {
+  const contextValue = useMemo<UserAuthContextType>(() => ({
     user,
     setUser,
     logout,
-  };
+  }), [user, setUser, logout]);
 
   return (
     <UserAuthContext.Provider value={contextValue}>

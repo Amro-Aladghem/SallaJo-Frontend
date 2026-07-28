@@ -10,6 +10,7 @@
     },
     "allowArbitraryExtensions": true,
     "skipLibCheck": true,
+    "allowJs": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",

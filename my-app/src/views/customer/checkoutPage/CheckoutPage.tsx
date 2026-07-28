@@ -2,9 +2,11 @@ import { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getCart } from '@/libs/cart';
 import { getCustomerProducts, getCustomerOffers, getCustomerStore } from '@/libs/customerStorage';
+import { StoreService } from '@/services/StoreService';
+import type { StoreDeliveryDto } from '@/types/dtos';
 import { governorates } from '@/assets/Data/governorates';
 import { regions } from '@/assets/Data/regions';
-import { ArrowRight, Crosshair } from 'lucide-react';
+import { ArrowRight, Crosshair, Truck } from 'lucide-react';
 
 const STORAGE_KEY = 'checkout';
 
@@ -61,22 +63,74 @@ export default function CheckoutPage() {
   const offersTotal = offerRows.reduce(
     (sum: number, r: any) => sum + (r.info.offerPrice ?? 0), 0
   );
-  const grandTotal = productsTotal + offersTotal;
 
   const saved = slug ? loadSaved(slug) : null;
 
   const [name, setName] = useState(saved?.name ?? '');
   const [phone, setPhone] = useState(saved?.phone ?? '');
-  const [phoneError, setPhoneError] = useState('');
+  const [_phoneError, setPhoneError] = useState('');
   const [governorateId, setGovernorateId] = useState<number | ''>(saved?.governorateId ?? '');
   const [regionId, setRegionId] = useState<number | ''>(saved?.regionId ?? '');
   const [lat, setLat] = useState<number | null>(saved?.lat ?? null);
   const [lng, setLng] = useState<number | null>(saved?.lng ?? null);
   const [locError, setLocError] = useState('');
   const [locLoading, setLocLoading] = useState(false);
-  const [orderType, setOrderType] = useState<'pickup' | 'delivery'>(saved?.orderType ?? 'delivery');
+  const [orderType, setOrderType] = useState<'pickup' | 'delivery'>(saved?.orderType ?? (store?.isHasDelivery ? 'delivery' : 'pickup'));
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [deliveries, setDeliveries] = useState<StoreDeliveryDto[]>([]);
+  const [deliveryLoading, setDeliveryLoading] = useState(false);
+  const [deliveryApiFailed, setDeliveryApiFailed] = useState(false);
+  const [deliveryInfo, setDeliveryInfo] = useState<StoreDeliveryDto | null>(null);
+
+  const isNoDelivery = !store?.isHasDelivery;
+  const isDeliveryUnavailable = store?.isHasDelivery && deliveryInfo && !deliveryInfo.isDelivery;
+  const canDeliver = store?.isHasDelivery && deliveryInfo?.isDelivery;
+
+  const deliveryFee = canDeliver && deliveryInfo.amount != null ? deliveryInfo.amount : 0;
+  const hasFixedDeliveryFee = canDeliver && deliveryInfo.amount != null;
+  const hasNegotiableDelivery = canDeliver && deliveryInfo.amount == null;
+
+  const deliveryDisabled = isNoDelivery || isDeliveryUnavailable || deliveryLoading;
+
+  const subTotal = productsTotal + offersTotal;
+  const grandTotal = subTotal + (orderType === 'delivery' && hasFixedDeliveryFee ? deliveryFee : 0);
+
+  useEffect(() => {
+    if (!slug || !store?.isHasDelivery) return;
+    const load = async () => {
+      setDeliveryLoading(true);
+      const result = await StoreService.getStoreDeliveries(slug);
+      if (result.isSuccess) {
+        setDeliveries(result.data);
+      } else {
+        setDeliveryApiFailed(true);
+      }
+      setDeliveryLoading(false);
+    };
+    load();
+  }, [slug, store?.isHasDelivery]);
+
+  useEffect(() => {
+    if (!governorateId) {
+      setDeliveryInfo(null);
+      return;
+    }
+    const match = deliveries.find((d) => d.governorateId === governorateId);
+    if (match) {
+      setDeliveryInfo(match);
+    } else if (deliveryApiFailed) {
+      setDeliveryInfo({ governorateId, isDelivery: true, amount: null });
+    } else {
+      setDeliveryInfo(null);
+    }
+  }, [governorateId, deliveries, deliveryApiFailed]);
+
+  useEffect(() => {
+    if ((isNoDelivery || isDeliveryUnavailable) && orderType === 'delivery') {
+      setOrderType('pickup');
+    }
+  }, [isNoDelivery, isDeliveryUnavailable, orderType]);
 
   useEffect(() => {
     if (!slug) return;
@@ -231,7 +285,18 @@ export default function CheckoutPage() {
         message += `  سعر العرض: ${r.info.offerPrice} د.أ\n`;
       });
     }
-    message += `\nالمجموع الكلي: ${grandTotal.toFixed(1)} د.أ`;
+    if (orderType === 'delivery') {
+      if (hasFixedDeliveryFee) {
+        message += `\nسعر التوصيل: ${deliveryFee} د.أ`;
+      } else if (hasNegotiableDelivery) {
+        message += `\nسعر التوصيل: يحدد من قبل المتجر`;
+      }
+    }
+    if (orderType === 'delivery' && hasNegotiableDelivery) {
+      message += `\nالمجموع الكلي: ${subTotal.toFixed(1)} د.أ + سعر توصيل يحدده المتجر`;
+    } else {
+      message += `\nالمجموع الكلي: ${grandTotal.toFixed(1)} د.أ`;
+    }
 
     const waPhone = store.phoneNumber.replace(/^0+/, '');
     const url = `https://wa.me/${waPhone}?text=${encodeURIComponent(message)}`;
@@ -354,10 +419,12 @@ export default function CheckoutPage() {
             <label className="block text-sm font-medium text-gray-700 mb-2">نوع الطلب</label>
             <div className="flex gap-3">
               <label
-                className={`flex-1 flex items-center justify-center gap-2 border rounded-lg px-3 py-3 text-sm cursor-pointer transition-colors ${
-                  orderType === 'delivery'
-                    ? 'border-primary bg-primary/5 text-primary'
-                    : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                className={`flex-1 flex items-center justify-center gap-2 border rounded-lg px-3 py-3 text-sm transition-colors ${
+                  deliveryDisabled
+                    ? 'border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed'
+                    : orderType === 'delivery'
+                      ? 'border-primary bg-primary/5 text-primary cursor-pointer'
+                      : 'border-gray-200 text-gray-600 hover:border-gray-300 cursor-pointer'
                 }`}
               >
                 <input
@@ -365,10 +432,11 @@ export default function CheckoutPage() {
                   name="orderType"
                   value="delivery"
                   checked={orderType === 'delivery'}
-                  onChange={() => setOrderType('delivery')}
+                  onChange={() => !deliveryDisabled && setOrderType('delivery')}
+                  disabled={deliveryDisabled}
                   className="sr-only"
                 />
-                توصيل
+                <span>توصيل</span>
               </label>
               <label
                 className={`flex-1 flex items-center justify-center gap-2 border rounded-lg px-3 py-3 text-sm cursor-pointer transition-colors ${
@@ -388,14 +456,52 @@ export default function CheckoutPage() {
                 جاي على المحل
               </label>
             </div>
+            {isNoDelivery && (
+              <p className="text-xs text-gray-400 mt-1">لا يوجد توصيل لهذا المتجر</p>
+            )}
+            {isDeliveryUnavailable && (
+              <p className="text-xs text-red-400 mt-1">المتجر لا يوفر توصيل إلى محافظتك</p>
+            )}
+            {deliveryLoading && (
+              <p className="text-xs text-gray-400 mt-1">جاري تحميل معلومات التوصيل...</p>
+            )}
           </div>
         </div>
 
         <div className="border-t border-gray-200 pt-4 space-y-2">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500 font-medium">السعر الكلي للمنتجات</span>
-            <span className="font-bold text-gray-900">{grandTotal.toFixed(1)} د.أ</span>
+            <span className="text-gray-500 font-medium">السعر الإجمالي للمنتجات</span>
+            <span className="font-bold text-gray-900">{subTotal.toFixed(1)} د.أ</span>
           </div>
+          {orderType === 'delivery' && hasFixedDeliveryFee && (
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-500 font-medium flex items-center gap-1">
+                <Truck className="h-3.5 w-3.5" />
+                التوصيل
+              </span>
+              <span className="font-bold text-gray-900">+ {deliveryFee} د.أ</span>
+            </div>
+          )}
+          {orderType === 'delivery' && hasNegotiableDelivery && (
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-500 font-medium flex items-center gap-1">
+                <Truck className="h-3.5 w-3.5" />
+                التوصيل
+              </span>
+              <span className="text-gray-400 text-xs">يحدد من قبل المتجر عند التواصل</span>
+            </div>
+          )}
+          {orderType === 'delivery' && (
+            <div className="flex items-center justify-between text-sm border-t border-gray-100 pt-2">
+              <span className="font-bold text-gray-700">السعر الكلي</span>
+              <span className="font-bold text-gray-900">
+                {hasNegotiableDelivery
+                  ? `${subTotal.toFixed(1)} د.أ + سعر توصيل يحدده المتجر`
+                  : `${grandTotal.toFixed(1)} د.أ`
+                }
+              </span>
+            </div>
+          )}
         </div>
 
         <button

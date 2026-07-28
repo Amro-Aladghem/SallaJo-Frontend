@@ -32,6 +32,15 @@ export default function StorePage() {
   const [storeError, setStoreError] = useState(false);
 
   useEffect(() => {
+    if (!store) return;
+    document.title = store.name;
+    const icon = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    if (icon) {
+      icon.href = store.logoImageUrl || '/sallahlogo.png';
+    }
+  }, [store]);
+
+  useEffect(() => {
     if (!slug) return;
 
     const load = async () => {
@@ -81,7 +90,6 @@ export default function StorePage() {
       <div className="pt-16 pb-14">
         <CoverSection
           coverImageLink={store.coverStoreImageLink}
-          logoImageUrl={store.logoImageUrl}
           storeName={store.name}
         />
 

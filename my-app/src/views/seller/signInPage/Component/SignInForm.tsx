@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -65,7 +65,12 @@ export default function SignInForm() {
     setLoading(false);
   };
 
+  const refreshCalled = useRef(false);
+
   useEffect(() => {
+    if (refreshCalled.current) return;
+    refreshCalled.current = true;
+
     const tryRefresh = async () => {
       const result = await PersonService.refreshToken();
       if (result.isSuccess) {

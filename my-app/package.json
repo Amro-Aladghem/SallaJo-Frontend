@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postbuild": "node generate-sitemap.js",
+    "generate-sitemap": "node generate-sitemap.js"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",
@@ -32,7 +34,7 @@
     "react-dom": "^19.2.7",
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^7.6.0",
-    "sitemap": "^8.0.0",
+    "sitemap": "^8.0.3",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^4.3.3"
   },

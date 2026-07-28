@@ -5,6 +5,7 @@ import type {
   StoreInfoForSellerDto,
   StorePageInfoDto,
   StoreInfoForCustomerDto,
+  StoreDeliveryDto,
   UpdateStoreInfoDto,
   AddOfferDto,
   OfferCustomerInfoDto,
@@ -160,6 +161,16 @@ export const StoreService = {
   async getMyStoreProducts(params: GetProductsPaginatedRequestDto): Promise<ApiResponse<GetProductsPaginatedDto>> {
     try {
       const response = await api.get<GetProductsPaginatedDto>(`${baseUri}/products`, { params });
+      return { isSuccess: true, data: response.data };
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+
+  async getStoreDeliveries(slug: string): Promise<ApiResponse<StoreDeliveryDto[]>> {
+    try {
+      const response = await api.get<StoreDeliveryDto[]>(`${baseUri}/${slug}/deliveries`);
       return { isSuccess: true, data: response.data };
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };

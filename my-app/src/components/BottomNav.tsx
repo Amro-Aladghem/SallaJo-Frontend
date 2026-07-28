@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useLocation, useParams, Link } from 'react-router-dom';
 import { Home, Percent, Gift, ShoppingCart } from 'lucide-react';
 import { getCartCount } from '@/libs/cart';
@@ -5,12 +6,18 @@ import { getCartCount } from '@/libs/cart';
 export default function BottomNav() {
   const { slug } = useParams<{ slug: string }>();
   const location = useLocation();
+  const [cartCount, setCartCount] = useState(getCartCount());
+
+  useEffect(() => {
+    const handler = () => setCartCount(getCartCount());
+    window.addEventListener('cart-change', handler);
+    return () => window.removeEventListener('cart-change', handler);
+  }, []);
 
   if (!slug) return null;
 
   const base = `/store/${slug}`;
   const isActive = (path: string) => location.pathname === path;
-  const cartCount = getCartCount();
 
   const items = [
     { label: 'الخصومات', icon: Percent, href: `${base}/discounts` },

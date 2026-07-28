@@ -1,4 +1,4 @@
-import api, { type ApiResponse, type UploadImageResult } from '@/libs/api';
+import api, { type ApiResponse } from '@/libs/api';
 
 const baseUri = '/tools';
 

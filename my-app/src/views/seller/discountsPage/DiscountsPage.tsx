@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import Loader from '@/components/Loader';
 import ErrorPage from '@/components/ErrorPage';
 import Toast from '@/components/ui/toast';
-import { Tag, ToggleLeft, ToggleRight, RefreshCw } from 'lucide-react';
-import NotfoundPage from '@/components/NotfoundPage';
+import { ToggleLeft, ToggleRight, RefreshCw } from 'lucide-react';
+import NotFoundPage from '@/components/NotFoundPage';
 
 export default function DiscountsPage() {
   const [discounts, setDiscounts] = useState<DiscountInfoDto[]>([]);
@@ -83,7 +83,7 @@ export default function DiscountsPage() {
       </div>
 
       {discounts.length === 0 ? (
-        <NotfoundPage message="لم تقم بإضافة أية خصومات حالياً" />
+        <NotFoundPage message="لم تقم بإضافة أية خصومات حالياً" />
       ) : (
         <div className="space-y-4">
           {discounts.map((discount) => (

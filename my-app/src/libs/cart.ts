@@ -21,10 +21,15 @@ function getCartKey(): string {
   return `cart-${getDateKey()}`;
 }
 
+function notifyCartChange() {
+  window.dispatchEvent(new CustomEvent('cart-change'));
+}
+
 export function initCart(): void {
   const key = getCartKey();
   if (!sessionStorage.getItem(key)) {
     sessionStorage.setItem(key, JSON.stringify({ products: [], offers: [] }));
+    notifyCartChange();
   }
 }
 
@@ -53,12 +58,14 @@ export function addProductToCart(id: string, quantity: number): void {
     cart.products.push({ id, quantity });
   }
   saveCart(cart);
+  notifyCartChange();
 }
 
 export function removeProductFromCart(id: string): void {
   const cart = getCart();
   cart.products = cart.products.filter((p) => p.id !== id);
   saveCart(cart);
+  notifyCartChange();
 }
 
 export function updateProductQuantity(id: string, delta: number): void {
@@ -71,6 +78,7 @@ export function updateProductQuantity(id: string, delta: number): void {
     }
   }
   saveCart(cart);
+  notifyCartChange();
 }
 
 export function getProductQuantity(id: string): number {
@@ -84,12 +92,14 @@ export function addOfferToCart(id: string): void {
     cart.offers.push({ id });
   }
   saveCart(cart);
+  notifyCartChange();
 }
 
 export function removeOfferFromCart(id: string): void {
   const cart = getCart();
   cart.offers = cart.offers.filter((o) => o.id !== id);
   saveCart(cart);
+  notifyCartChange();
 }
 
 export function isOfferInCart(id: string): boolean {
@@ -104,4 +114,5 @@ export function getCartCount(): number {
 
 export function clearCart(): void {
   sessionStorage.removeItem(getCartKey());
+  notifyCartChange();
 }

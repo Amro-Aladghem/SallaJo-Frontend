@@ -15,4 +15,5 @@ export interface StorePageInfoDto {
   countryId: number | null;
   slug: string | null;
   isAcceptedToShowStoke: boolean;
+  isHasDelivery: boolean;
 }

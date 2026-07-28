@@ -161,7 +161,7 @@ export default function ProductDialog({ productId, open, onClose, onRefreshList 
     }
 
 
-    const targetImage = product.images.find((img) => img.id === targetId);
+    const targetImage = product!.images.find((img) => img.id === targetId);
     const wasPrimary = targetImage?.imageLink === primaryImageLink;
 
     const updateResult = await ProductController.updateImages(productId, {

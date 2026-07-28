@@ -18,7 +18,7 @@ function Box({
   icon: React.ReactNode;
   title: string;
   description?: string;
-  buttonText: string;
+  buttonText?: string;
   onClick?: () => void;
   children?: React.ReactNode;
   hideButton?: boolean;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Copy, Check, Image as ImageIcon, Layout, Tag, Package } from 'lucide-react';
+import { ArrowLeft, Copy, Check, Layout, Tag, Package } from 'lucide-react';
 import Toast from '@/components/ui/toast';
 
 const prompts = [

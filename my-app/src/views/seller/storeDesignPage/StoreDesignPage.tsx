@@ -8,7 +8,7 @@ import { ToolService } from '@/services/ToolService';
 import { useAuth } from '@/hooks/useAuth';
 import { governorates } from '@/assets/Data/governorates';
 import { colors } from '@/assets/Data/colors';
-import type { ProductSimpleInfoDto } from '@/types/dtos';
+
 import {
   Store, Camera, Loader2, Pencil, Phone, MapPin, Facebook, Instagram,
   Package, Gift, ArrowRight, Home, BadgePercent, User, Images,
@@ -150,7 +150,7 @@ const ImageCardDialog = ({ imageCardEdit, cardImages, uploadingCardImage, onClos
 
 export default function StoreDesignPage() {
   const navigate = useNavigate();
-  const { user, setStore, setUser } = useAuth();
+  const { user, setUser } = useAuth();
 
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ open: boolean; type: string; message: string }>({
@@ -162,7 +162,7 @@ export default function StoreDesignPage() {
   const [name, setName] = useState(user.store?.name || '');
   const [description, setDescription] = useState(user.store?.description || '');
   const [phoneNumber, setPhoneNumber] = useState(user.store?.phoneNumber || '');
-  const [governorateId, setGovernorateId] = useState(user.store?.governorateId || 0);
+  const [governorateId] = useState(user.store?.governorateId || 0);
   const [primaryColorId, setPrimaryColorId] = useState(user.store?.primaryColorId || DEFAULT_COLOR_ID);
   const [facebookLink, setFacebookLink] = useState(user.store?.facebookLink || '');
   const [instagramLink, setInstagramLink] = useState(user.store?.instagramLink || '');
@@ -262,7 +262,7 @@ export default function StoreDesignPage() {
   }
 
   const handleSave = async () => {
-    if(!verfiy()) return;
+    if(!verfiy() || !storeId) return;
 
     setSaving(true);
     const data = {

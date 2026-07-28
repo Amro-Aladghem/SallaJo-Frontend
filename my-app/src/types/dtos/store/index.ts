@@ -4,3 +4,5 @@ export type { InitialStoreInfoDto } from './InitialStoreInfoDto';
 export type { StorePageInfoDto } from './StorePageInfoDto';
 export type { StoreInfoForSellerDto } from './StoreInfoForSellerDto';
 export type { StoreInfoForCustomerDto } from './StoreInfoForCustomerDto';
+export type { StoreDeliveryDto } from './StoreDeliveryDto';
+export type { ActivateStoreByAdminDto } from './ActivateStoreByAdminDto';

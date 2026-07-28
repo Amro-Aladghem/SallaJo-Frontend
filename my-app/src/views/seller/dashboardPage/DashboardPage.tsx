@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Loader from '@/components/Loader';
 import { useAuth } from '@/hooks/useAuth';
@@ -20,6 +20,8 @@ export default function DashboardPage() {
     message: '',
   });
 
+  const fetchedRef = useRef(false);
+
   useEffect(() => {
     if (!user.person.isActive) {
       setLoading(false);
@@ -30,6 +32,9 @@ export default function DashboardPage() {
       setLoading(false);
       return;
     }
+
+    if (fetchedRef.current) return;
+    fetchedRef.current = true;
 
     const fetchStore = async () => {
       const result = await StoreService.getMyStore();

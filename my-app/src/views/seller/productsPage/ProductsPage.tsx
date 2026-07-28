@@ -35,7 +35,7 @@ export default function ProductsPage() {
       } else if (result.data.products.length === 0) {
         setHasMore(false);
       } else {
-        lastSeqRef.current = result.data.lastSequenceProductNumber;
+        lastSeqRef.current = result.data.lastSequenceProductNumber ?? Number.MAX_SAFE_INTEGER;
       }
     } else {
       setError(true);

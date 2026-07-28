@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /seller/
+Disallow: /admin/
+
+Sitemap: https://sallajo.com/sitemap.xml

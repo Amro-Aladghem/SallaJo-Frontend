@@ -23,7 +23,7 @@ export interface AddInitialInfoResult {
 }
 
 const api = axios.create({
-  baseURL: 'https://localhost:7268/api/v1',
+  baseURL: 'https://sallahapi.taskalyze.com/api/v1',
   withCredentials: true,
 });
 

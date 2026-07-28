@@ -1,6 +1,6 @@
 import type { StorePageInfoDto } from '@/types/dtos';
 import { governorates } from '@/assets/Data/governorates';
-import { Phone, MapPin, Clock, Instagram, Facebook } from 'lucide-react';
+import { Phone, MapPin, Instagram, Facebook } from 'lucide-react';
 
 interface Props {
   store: StorePageInfoDto;

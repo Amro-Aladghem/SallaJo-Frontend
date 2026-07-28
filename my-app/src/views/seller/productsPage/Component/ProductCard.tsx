@@ -13,22 +13,13 @@ interface Props {
 }
 
 export default function ProductCard({ product, isSeller = false, isClickable = true, onClick, linkTo, isDiscount = false, discountAmount, showOutOfStock }: Props) {
-  const useLink = linkTo && isClickable;
-  const showAsButton = isClickable && !linkTo;
-  const Comp = useLink ? Link : showAsButton ? 'button' : 'div';
-  const compProps = useLink
-    ? { to: linkTo, className: 'flex flex-col border border-gray-200 rounded-lg overflow-hidden bg-white hover:border-primary/30 hover:shadow-md transition-all text-right w-full cursor-pointer' }
-    : showAsButton
-    ? { onClick, className: 'flex flex-col border border-gray-200 rounded-lg overflow-hidden bg-white hover:border-primary/30 hover:shadow-md transition-all text-right w-full cursor-pointer' }
-    : { className: 'flex flex-col border border-gray-200 rounded-lg overflow-hidden bg-white' };
-
   const finalDiscount = discountAmount ?? product.amountOfDiscount ?? 0;
   const hasDiscount = isDiscount && finalDiscount > 0;
   const originalPrice = product.price ?? 0;
   const discountedPrice = hasDiscount ? Math.max(0, originalPrice - finalDiscount) : originalPrice;
 
-  return (
-    <Comp {...compProps}>
+  const inner = (
+    <>
       <div className="relative w-full bg-gray-50 h-[180px] max-h-[200px] md:h-[220px] md:max-h-none lg:h-[260px]">
         <img
           src={product.primaryImageLink}
@@ -89,6 +80,16 @@ export default function ProductCard({ product, isSeller = false, isClickable = t
           ) : null}
         </div>
       </div>
-    </Comp>
+    </>
   );
+
+  const className = 'flex flex-col border border-gray-200 rounded-lg overflow-hidden bg-white hover:border-primary/30 hover:shadow-md transition-all text-right w-full cursor-pointer';
+
+  if (linkTo && isClickable) {
+    return <Link to={linkTo} className={className}>{inner}</Link>;
+  }
+  if (isClickable) {
+    return <button onClick={onClick} className={className}>{inner}</button>;
+  }
+  return <div className="flex flex-col border border-gray-200 rounded-lg overflow-hidden bg-white">{inner}</div>;
 }
