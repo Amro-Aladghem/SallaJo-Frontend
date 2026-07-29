@@ -9,7 +9,7 @@ import { StoreService } from '@/services/StoreService';
 import { PersonService } from '@/services/PersonService';
 import { useAuth } from '@/hooks/useAuth';
 import { governorates } from '@/assets/Data/governorates';
-import { Loader2, ChevronLeft, Camera, CheckCircle, MessageCircle, User, Store, Key } from 'lucide-react';
+import { Loader2, Camera, CheckCircle, MessageCircle, User, Store, Key } from 'lucide-react';
 
 const STAGE_KEY = 'seller-stage';
 const STEP_KEY = 'seller-stage-step';
@@ -188,11 +188,6 @@ export default function PendingDashboard() {
 
         <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
           <div className="flex items-center gap-1.5">
-            {step === 2 && (
-              <button onClick={() => { setStep(1); saveStep(1); }} className="text-gray-500 hover:text-primary transition-colors">
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-            )}
             <h1 className="text-xl font-bold text-gray-900">
               {step === 1 ? 'المعلومات الأولية' : 'معلومات المتجر'}
             </h1>
@@ -214,7 +209,7 @@ export default function PendingDashboard() {
           {step === 1 && (
             <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
               <div className="flex justify-center">
-                <User className="h-14 w-14 text-primary/40" />س
+                <User className="h-14 w-14 text-primary/40" />
               </div>
 
               <div className="space-y-1.5">
