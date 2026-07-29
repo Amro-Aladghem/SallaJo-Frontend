@@ -9,11 +9,13 @@ import DashboardBoxes from './Component/DashboardBoxes';
 import PendingDashboard from './Component/PendingDashboard';
 import Toast from '@/components/ui/toast';
 import { Store } from 'lucide-react';
+import ErrorPage from '@/components/ErrorPage';
 
 export default function DashboardPage() {
   const { user, setStore } = useAuth();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(!user.store && user.person.isActive);
+  const [loading, setLoading] = useState(user.person.isActive);
+  const [ErrorLoadingData, setErrorLoadingData] = useState(false);
   const [toast, setToast] = useState<{ open: boolean; type: string; message: string }>({
     open: false,
     type: '',
@@ -24,11 +26,6 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!user.person.isActive) {
-      setLoading(false);
-      return;
-    }
-
-    if (user.store) {
       setLoading(false);
       return;
     }
@@ -44,14 +41,15 @@ export default function DashboardPage() {
         setToast({
           open: true,
           type: 'error',
-          message: `${result.error} (${result.statusCode})`,
+          message: `فشل تحميل بيانات المتجر الرجاء تحديث الصفحة`,
         });
+        setErrorLoadingData(true);  
       }
       setLoading(false);
     };
 
     fetchStore();
-  }, [user.store, setStore, user.person.isActive]);
+  }, [setStore, user.person.isActive]);
 
   if (loading) {
     return <Loader />;
@@ -61,22 +59,40 @@ export default function DashboardPage() {
     return <PendingDashboard />;
   }
 
+  if(ErrorLoadingData) return <ErrorPage/>;
+
   const store = user.store;
   if (store && !store.isCompletedStoreProfile) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] px-4">
-        <Card className="w-full max-w-sm border border-gray-200 shadow-sm">
-          <CardContent className="flex flex-col items-center gap-4 p-8 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-              <Store className="h-8 w-8 text-primary" />
-            </div>
-            <h2 className="text-xl font-bold text-gray-900">إنشاء متجرك</h2>
-            <p className="text-sm text-gray-500">قم بتصميم متجرك وإضافة المعلومات الأساسية ليظهر للعملاء</p>
-            <Button onClick={() => navigate('/seller/store/design')} className="w-full py-5 text-base font-bold">
-              ابدأ الآن
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl w-full">
+          <Card className="w-full border border-gray-200 shadow-sm">
+            <CardContent className="flex flex-col items-center gap-4 p-8 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                <Store className="h-8 w-8 text-primary" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-900">إنشاء متجرك</h2>
+              <p className="text-sm text-gray-500">قم بتصميم متجرك وإضافة المعلومات الأساسية ليظهر للعملاء</p>
+              <Button onClick={() => navigate('/seller/store/design')} className="w-full py-5 text-base font-bold">
+                ابدأ الآن
+              </Button>
+            </CardContent>
+          </Card>
+          <Card className="w-full border border-gray-200 shadow-sm">
+            <CardContent className="flex flex-col items-center gap-4 p-8 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                <Store className="h-8 w-8 text-primary" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-900">شاهد متجراً  لعملائنا</h2>
+              <p className="text-sm text-gray-500">اطلع على متجر حقيقي لترى كيف سيبدو متجرك</p>
+              <a href="https://sallahjo.taskalyze.com/store/cookenoura" target="_blank" rel="noopener noreferrer" className="w-full">
+                <Button className="w-full py-5 text-base font-bold">
+                  عرض المتجر
+                </Button>
+              </a>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }

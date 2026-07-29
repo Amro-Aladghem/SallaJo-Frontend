@@ -1,4 +1,5 @@
 export interface StoreInfoForSellerDto {
+  id: string;
   name: string;
   logoImageUrl: string;
   primaryColorId: number;

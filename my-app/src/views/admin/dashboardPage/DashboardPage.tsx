@@ -123,6 +123,28 @@ export default function AdminDashboard() {
     setSavingDeliveries(false);
   };
 
+  // Create Activation Code
+  const [personId, setPersonId] = useState('');
+  const [activationCode, setActivationCode] = useState<string | null>(null);
+  const [creatingCode, setCreatingCode] = useState(false);
+
+  const handleCreateCode = async () => {
+    if (!personId.trim()) {
+      showToast('error', 'يرجى إدخال معرف المستخدم');
+      return;
+    }
+    setActivationCode(null);
+    setCreatingCode(true);
+    const result = await AdminService.createActivationCode(personId.trim());
+    if (result.isSuccess) {
+      setActivationCode(result.data);
+      showToast('success', 'تم إنشاء كود التفعيل بنجاح');
+    } else {
+      showToast('error', result.error || 'حدث خطأ أثناء إنشاء الكود');
+    }
+    setCreatingCode(false);
+  };
+
   const handleLogout = () => {
     logout();
     navigate('/admin/sign-in', { replace: true });
@@ -184,6 +206,40 @@ export default function AdminDashboard() {
                 'تفعيل المتجر'
               )}
             </Button>
+          </CardContent>
+        </Card>
+
+        {/* Create Activation Code */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">إنشاء كود التفعيل</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>معرف المستخدم (Person ID)</Label>
+              <Input
+                value={personId}
+                onChange={(e) => setPersonId(e.target.value)}
+                placeholder="أدخل معرف المستخدم"
+              />
+            </div>
+            <Button
+              onClick={handleCreateCode}
+              disabled={creatingCode}
+              className="w-full"
+            >
+              {creatingCode ? (
+                <><Loader2 className="ml-2 h-4 w-4 animate-spin" /> جاري الإنشاء...</>
+              ) : (
+                'إنشاء كود التفعيل'
+              )}
+            </Button>
+            {activationCode && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center space-y-2">
+                <p className="text-sm text-green-700 font-medium">تم إنشاء الكود بنجاح</p>
+                <p className="text-2xl font-bold text-green-900 tracking-widest ltr" dir="ltr">{activationCode}</p>
+              </div>
+            )}
           </CardContent>
         </Card>
 

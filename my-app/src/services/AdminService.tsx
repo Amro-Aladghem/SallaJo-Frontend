@@ -23,4 +23,14 @@ export const AdminService = {
       return { isSuccess: false, error: message, statusCode };
     }
   },
+
+  async createActivationCode(personId: string): Promise<ApiResponse<string>> {
+    try {
+      const response = await api.put<string>(`${baseUri}/persons/${personId}/activate-code`);
+      return { isSuccess: true, data: response.data };
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
 };

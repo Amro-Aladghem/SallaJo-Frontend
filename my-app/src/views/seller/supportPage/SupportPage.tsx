@@ -10,6 +10,9 @@ export default function SupportPage() {
   const { user } = useAuth();
   const [person, setPerson] = useState(user.person);
 
+  const slug = user.store?.slug;
+  const isStoreActive = !!slug && !slug.startsWith('temp');
+
   useEffect(() => {
     const personJson = sessionStorage.getItem('person');
     if (!personJson) {
@@ -25,7 +28,7 @@ export default function SupportPage() {
       window.open(`https://wa.me/${WA_NUMBER}`, '_blank');
     } else {
       const msg = encodeURIComponent(
-        `مرحبا فريق سلة جو , اريد كود تفعيل حسابي المجاني لأنشاء المتجر رقم معرفي: ${person.sysId}`
+        `مرحبا فريق سلة جو , اريد كود تفعيل متجري والأشتراك الشهري بقيمة 4 دنانير رقم معرف المتجر :${user.store?.id}`
       );
       window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
     }
@@ -36,20 +39,7 @@ export default function SupportPage() {
       <div className="max-w-md w-full text-center space-y-8">
         <img src="/support.png" alt="الدعم الفني" className="w-50 h-35 mx-auto" />
 
-        {person.isActive ? (
-          <div className="space-y-6">
-            <h1 className="text-2xl font-bold text-gray-900 leading-relaxed">
-              تواصل مع الدعم الفني<br />لـ سلة جو
-            </h1>
-            <p className="text-gray-600 text-base leading-loose">
-              نعمل لأجلك واستفساراتك نحب سماعها
-              رد فوري  خلال اقل من دقيقة 
-              على مدار اليوم 
-              <br />
-              فخذ راحتك وراسلنا
-            </p>
-          </div>
-        ) : (
+        {!person.isActive ? (
           <div className="space-y-6">
             <h1 className="text-2xl font-bold text-gray-900 leading-relaxed">
               تواصل الأن مع<br />الدعم الفني لسلة جو
@@ -69,6 +59,34 @@ export default function SupportPage() {
             </p>
             <p className="text-gray-700 font-medium text-base">
                   الأن خلال ثواني الرد
+            </p>
+          </div>
+        ) : !isStoreActive ? (
+          <div className="space-y-6">
+            <h1 className="text-2xl font-bold text-gray-900 leading-relaxed">
+              تواصل مع الدعم الفني<br />لتفعيل المتجر
+            </h1>
+            <p className="text-gray-600 text-base leading-loose">
+              تواصل مع الدعم الفني لتفعيل المتجر والأشتراك الشهري بقيمة 4 دنانير شهريا فقط
+            </p>
+            <p className="text-green-600 font-semibold text-base">
+              التفعيل خلال دقائق فقط
+            </p>
+            <p className="text-gray-700 font-medium text-base">
+              ابدأ متجرك الأن وريح نفسك من رسائل الكثيرة
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <h1 className="text-2xl font-bold text-gray-900 leading-relaxed">
+              تواصل مع الدعم الفني<br />لـ سلة جو
+            </h1>
+            <p className="text-gray-600 text-base leading-loose">
+              نعمل لأجلك واستفساراتك نحب سماعها
+              رد فوري  خلال اقل من دقيقة 
+              على مدار اليوم 
+              <br />
+              فخذ راحتك وراسلنا
             </p>
           </div>
         )}
