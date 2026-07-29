@@ -105,28 +105,36 @@ export default function DashboardNavbar({ store, person }: Props) {
 
       {/* Mobile bottom tab bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-gray-200 bg-white py-2">
-        <Link to="/seller/info" className={`flex flex-col items-center gap-0.5 transition-colors ${location.pathname === '/seller/info' ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}>
-          <User className="h-5 w-5" />
-          <span className="text-[10px]">الحساب</span>
-        </Link>
-        <Link to="/seller/products" className={`flex flex-col items-center gap-0.5 transition-colors ${location.pathname === '/seller/products' ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}>
-          <Package className="h-5 w-5" />
-          <span className="text-[10px]">منتجاتك</span>
-        </Link>
+        {person.isActive ? (
+          <>
+            <Link to="/seller/info" className={`flex flex-col items-center gap-0.5 transition-colors ${location.pathname === '/seller/info' ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}>
+              <User className="h-5 w-5" />
+              <span className="text-[10px]">الحساب</span>
+            </Link>
+            <Link to="/seller/products" className={`flex flex-col items-center gap-0.5 transition-colors ${location.pathname === '/seller/products' ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}>
+              <Package className="h-5 w-5" />
+              <span className="text-[10px]">منتجاتك</span>
+            </Link>
+          </>
+        ) : null}
         <Link to="/seller/dashboard" className={`flex flex-col items-center gap-0.5 -mt-2 ${location.pathname === '/seller/dashboard' ? 'text-primary' : 'text-gray-400'}`}>
           <div className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors ${location.pathname === '/seller/dashboard' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-500'}`}>
             <Home className="h-5 w-5" />
           </div>
           <span className={`text-[10px] font-medium ${location.pathname === '/seller/dashboard' ? 'text-primary' : 'text-gray-400'}`}>الرئيسية</span>
         </Link>
-        <Link to="/seller/discounts" className={`flex flex-col items-center gap-0.5 transition-colors ${location.pathname === '/seller/discounts' ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}>
-          <BadgePercent className="h-5 w-5" />
-          <span className="text-[10px]">خصوماتي</span>
-        </Link>
-        <Link to="/seller/offers" className={`flex flex-col items-center gap-0.5 transition-colors ${location.pathname === '/seller/offers' ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}>
-          <Gift className="h-5 w-5" />
-          <span className="text-[10px]">عروضك</span>
-        </Link>
+        {person.isActive ? (
+          <>
+            <Link to="/seller/discounts" className={`flex flex-col items-center gap-0.5 transition-colors ${location.pathname === '/seller/discounts' ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}>
+              <BadgePercent className="h-5 w-5" />
+              <span className="text-[10px]">خصوماتي</span>
+            </Link>
+            <Link to="/seller/offers" className={`flex flex-col items-center gap-0.5 transition-colors ${location.pathname === '/seller/offers' ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}>
+              <Gift className="h-5 w-5" />
+              <span className="text-[10px]">عروضك</span>
+            </Link>
+          </>
+        ) : null}
       </div>
     </>
   );

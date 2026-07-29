@@ -12,6 +12,7 @@ import { governorates } from '@/assets/Data/governorates';
 import { Loader2, ChevronLeft, Camera, CheckCircle, MessageCircle, User, Store, Key } from 'lucide-react';
 
 const STAGE_KEY = 'seller-stage';
+const STEP_KEY = 'seller-stage-step';
 
 type Stage = 'initial' | 'pending';
 
@@ -32,6 +33,18 @@ function setStage(stage: Stage) {
 
 function clearStage() {
   sessionStorage.removeItem(STAGE_KEY);
+  sessionStorage.removeItem(STEP_KEY);
+}
+
+function getSavedStep(): number {
+  const raw = sessionStorage.getItem(STEP_KEY);
+  if (!raw) return 1;
+  const num = parseInt(raw, 10);
+  return num === 1 || num === 2 ? num : 1;
+}
+
+function saveStep(step: number) {
+  sessionStorage.setItem(STEP_KEY, String(step));
 }
 
 export default function PendingDashboard() {
@@ -40,7 +53,7 @@ export default function PendingDashboard() {
 
   const currentStage = getStage() || 'initial';
   const [stage, setStageState] = useState<Stage>(currentStage);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(getSavedStep);
 
   const [loading, setLoading] = useState(false);
   const [sellerId, setSellerId] = useState('');
@@ -97,6 +110,7 @@ export default function PendingDashboard() {
       setSellerId(result.data);
       setStoreGovernorateId(personGovernorateId);
       setStep(2);
+      saveStep(2);
     } else {
       showToast('error', 'فشل حفظ المعلومات، حاول مرة أخرى');
     }
@@ -175,7 +189,7 @@ export default function PendingDashboard() {
         <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
           <div className="flex items-center gap-1.5">
             {step === 2 && (
-              <button onClick={() => setStep(1)} className="text-gray-500 hover:text-primary transition-colors">
+              <button onClick={() => { setStep(1); saveStep(1); }} className="text-gray-500 hover:text-primary transition-colors">
                 <ChevronLeft className="h-5 w-5" />
               </button>
             )}

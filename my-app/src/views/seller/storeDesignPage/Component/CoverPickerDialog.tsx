@@ -30,8 +30,8 @@ export default function CoverPickerDialog({ open, onClose, onSelect }: Props) {
     setPage((p) => p + 1);
   };
 
-  const handleSelect = (filename: string) => {
-    setSelectedUrl(`/cover_images/${encodeURIComponent(filename)}`);
+  const handleSelect = (link: string) => {
+    setSelectedUrl(link);
   };
 
   const handleConfirm = () => {
@@ -61,23 +61,21 @@ export default function CoverPickerDialog({ open, onClose, onSelect }: Props) {
 
           {/* Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {visibleImages.map((filename) => {
-              const url = `/cover_images/${encodeURIComponent(filename)}`;
-              const name = filename.replace('.png', '').replace('.jpg', '').replace('.jpeg', '');
-              const isSelected = selectedUrl === url;
+            {visibleImages.map((item) => {
+              const isSelected = selectedUrl === item.link;
               return (
                 <button
-                  key={filename}
-                  onClick={() => handleSelect(filename)}
+                  key={item.id}
+                  onClick={() => handleSelect(item.link)}
                   className={`rounded-xl border-2 overflow-hidden text-right transition-colors ${
                     isSelected ? 'border-primary' : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
                   <div className="w-full aspect-[16/6] bg-gray-100">
-                    <img src={url} alt={name} className="w-full h-full object-cover" loading="lazy" />
+                    <img src={item.link} alt={item.name} className="w-full h-full object-cover" loading="lazy" />
                   </div>
                   <div className="px-2 py-1.5">
-                    <span className="text-[11px] text-gray-700 font-medium line-clamp-1">{name}</span>
+                    <span className="text-[11px] text-gray-700 font-medium line-clamp-1">{item.name}</span>
                   </div>
                 </button>
               );

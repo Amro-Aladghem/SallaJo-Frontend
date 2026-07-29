@@ -85,7 +85,7 @@ export default function DashboardPage() {
               </div>
               <h2 className="text-xl font-bold text-gray-900">شاهد متجراً  لعملائنا</h2>
               <p className="text-sm text-gray-500">اطلع على متجر حقيقي لترى كيف سيبدو متجرك</p>
-              <a href="https://sallahjo.taskalyze.com/store/cookenoura" target="_blank" rel="noopener noreferrer" className="w-full">
+              <a href="https://sallahjo.taskalyze.com/store/cookienoura" target="_blank" rel="noopener noreferrer" className="w-full">
                 <Button className="w-full py-5 text-base font-bold">
                   عرض المتجر
                 </Button>

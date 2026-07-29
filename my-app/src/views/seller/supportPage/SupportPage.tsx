@@ -24,13 +24,13 @@ export default function SupportPage() {
   }, [navigate]);
 
   const handleChat = () => {
-    if (person.isActive) {
-      window.open(`https://wa.me/${WA_NUMBER}`, '_blank');
-    } else {
-      const msg = encodeURIComponent(
+    if (!user.store?.slug || user.store?.slug.startsWith('temp')) {
+       const msg = encodeURIComponent(
         `مرحبا فريق سلة جو , اريد كود تفعيل متجري والأشتراك الشهري بقيمة 4 دنانير رقم معرف المتجر :${user.store?.id}`
       );
       window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
+    } else {
+      window.open(`https://wa.me/${WA_NUMBER}`, '_blank');
     }
   };
 
