@@ -24,10 +24,10 @@ export default function DiscountsSection({ discounts, slug, onViewAll }: Props) 
         </button>
       </div>
 
-      <div className="overflow-x-auto scrollbar-hide">
-        <div className="flex gap-3 px-4 pb-1">
+      <div className="overflow-x-auto scrollbar-hide ml-1 ">
+        <div className="flex gap-3 px-4 pl-8 pb-1">
           {discounts.map((discount) => (
-            <div key={discount.product.id} className="flex-[0_0_40%] min-w-[140px]">
+            <div key={discount.product.id} className="flex-[0_0_48%] min-w-[160px]">
               <ProductCard
                 product={discount.product}
                 isSeller={false}

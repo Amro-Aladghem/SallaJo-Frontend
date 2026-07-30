@@ -135,12 +135,12 @@ export default function ProductPage() {
         <div className="flex items-center gap-3">
           {hasDiscount ? (
             <>
-              <span className="text-primary font-bold text-xl">{discountedPrice.toFixed(1)} د.أ</span>
-              <span className="text-gray-400 text-sm line-through">{originalPrice.toFixed(1)} د.أ</span>
+              <span className="text-primary font-bold text-xl">{discountedPrice.toFixed(2)} د.أ</span>
+              <span className="text-gray-400 text-sm line-through">{originalPrice.toFixed(2)} د.أ</span>
             </>
           ) : (
             <span className="text-gray-900 font-bold text-xl">
-              {product.price ? `${product.price} د.أ` : '---'}
+              {product.price != null ? `${Number(product.price).toFixed(2)} د.أ` : '---'}
             </span>
           )}
         </div>

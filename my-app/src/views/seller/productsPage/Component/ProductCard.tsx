@@ -59,12 +59,12 @@ export default function ProductCard({ product, isSeller = false, isClickable = t
           <div className="flex flex-col">
             {hasDiscount ? (
               <>
-                <span className="text-primary font-bold text-sm">{discountedPrice.toFixed(1)} د.أ</span>
-                <span className="text-gray-400 text-xs line-through">{originalPrice.toFixed(1)} د.أ</span>
+                <span className="text-primary font-bold text-sm">{discountedPrice.toFixed(2)} د.أ</span>
+                <span className="text-gray-400 text-xs line-through">{originalPrice.toFixed(2)} د.أ</span>
               </>
             ) : (
               <span className="text-gray-900 font-bold text-sm">
-                {product.price ? `${product.price} د.أ` : '---'}
+                {product.price != null ? `${Number(product.price).toFixed(2)} د.أ` : '---'}
               </span>
             )}
             {!isSeller && showOutOfStock && product.stock === 0 && (
