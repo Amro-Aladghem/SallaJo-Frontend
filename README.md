@@ -27,14 +27,12 @@ Mobile-first, RTL-optimized web application built with React + TypeScript + .NET
 
 ## System Features
 
-- **Multi-Role Auth** — Separate sign-in flows for sellers, customers, and admins with role-based access control (`userTypeId: 3`)
+- **Multi-Role Auth** — Separate sign-in flows for sellers, customers.
 - **Seller Lifecycle** — Complete registration → activation → store setup → product publishing pipeline with stage persistence
 - **Discount Engine** — Fixed-amount JOD discounts with toggle controls, applied directly to product prices
 - **Offer System** — Time-limited offers with product grouping, independent pricing, and visibility toggles
 - **Stock Management** — Real-time stock tracking, out-of-stock indicators for customers, administrative updates
-- **Rate Limiting** — IP-based rate limiting with Cloudflare-aware `X-Forwarded-For` header detection across all public endpoints
 - **Image Upload** — Single-click upload with automatic phone camera/gallery prompt, primary image assignment
-- **CDN Integration** — Cover images hosted on CDN (`cdn.taskalyze.com`) for fast global delivery
 - **Sitemap Generation** — Automatic `sitemap.xml` generation with static routes + dynamic store slugs
 - **Session Persistence** — Browser session storage for auth state, cart, checkout data, and seller stage tracking
 - **Admin Controls** — Activate stores, manage subscriptions, configure delivery fees, generate activation codes
