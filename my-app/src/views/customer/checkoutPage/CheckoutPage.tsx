@@ -85,13 +85,14 @@ export default function CheckoutPage() {
 
   const isNoDelivery = !store?.isHasDelivery;
   const isDeliveryUnavailable = store?.isHasDelivery && deliveryInfo && !deliveryInfo.isDelivery;
+  const isDeliveryRegionUnavailable = store?.isHasDelivery && governorateId !== '' && deliveryInfo == null && !deliveryApiFailed && !deliveryLoading;
   const canDeliver = store?.isHasDelivery && deliveryInfo?.isDelivery;
 
   const deliveryFee = canDeliver && deliveryInfo.amount != null ? deliveryInfo.amount : 0;
   const hasFixedDeliveryFee = canDeliver && deliveryInfo.amount != null;
   const hasNegotiableDelivery = canDeliver && deliveryInfo.amount == null;
 
-  const deliveryDisabled = isNoDelivery || isDeliveryUnavailable || deliveryLoading;
+  const deliveryDisabled = isNoDelivery || isDeliveryUnavailable || isDeliveryRegionUnavailable || deliveryLoading;
 
   const subTotal = productsTotal + offersTotal;
   const grandTotal = subTotal + (orderType === 'delivery' && hasFixedDeliveryFee ? deliveryFee : 0);
@@ -127,10 +128,10 @@ export default function CheckoutPage() {
   }, [governorateId, deliveries, deliveryApiFailed]);
 
   useEffect(() => {
-    if ((isNoDelivery || isDeliveryUnavailable) && orderType === 'delivery') {
+    if ((isNoDelivery || isDeliveryUnavailable || isDeliveryRegionUnavailable) && orderType === 'delivery') {
       setOrderType('pickup');
     }
-  }, [isNoDelivery, isDeliveryUnavailable, orderType]);
+  }, [isNoDelivery, isDeliveryUnavailable, isDeliveryRegionUnavailable, orderType]);
 
   useEffect(() => {
     if (!slug) return;
@@ -461,6 +462,9 @@ export default function CheckoutPage() {
             )}
             {isDeliveryUnavailable && (
               <p className="text-xs text-red-400 mt-1">المتجر لا يوفر توصيل إلى محافظتك</p>
+            )}
+            {isDeliveryRegionUnavailable && (
+              <p className="text-xs text-red-400 mt-1">لا توصل لهذه المنطقة</p>
             )}
             {deliveryLoading && (
               <p className="text-xs text-gray-400 mt-1">جاري تحميل معلومات التوصيل...</p>

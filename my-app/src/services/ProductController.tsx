@@ -8,6 +8,7 @@ import type {
   ProductFullInfoForCustomerDto,
   GetProductFullInfoForSellerDto,
   AddDiscountDto,
+  ProductSimpleInfoDto,
 } from '@/types/dtos';
 
 const baseUri = '/products';
@@ -36,6 +37,18 @@ export const ProductController = {
   async getProductForSeller(id: string): Promise<ApiResponse<GetProductFullInfoForSellerDto>> {
     try {
       const response = await api.get<GetProductFullInfoForSellerDto>(`${baseUri}/${id}`);
+      return { isSuccess: true, data: response.data };
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+
+  async searchProducts(searchText: string, storeSlug?: string): Promise<ApiResponse<ProductSimpleInfoDto[]>> {
+    try {
+      const response = await api.get<ProductSimpleInfoDto[]>(`${baseUri}/search`, {
+        params: { searchText, storeSlug },
+      });
       return { isSuccess: true, data: response.data };
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };
@@ -86,6 +99,16 @@ export const ProductController = {
   async updateImages(id: string, data: UpdateImageDto): Promise<ApiResponse<boolean>> {
     try {
       const response = await api.put<boolean>(`${baseUri}/${id}/images`, data);
+      return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
+    } catch (error) {
+      const { message, statusCode } = error as { message: string; statusCode: number };
+      return { isSuccess: false, error: message, statusCode };
+    }
+  },
+
+  async addProductImage(id: string, imageUrl: string): Promise<ApiResponse<boolean>> {
+    try {
+      const response = await api.post<boolean>(`${baseUri}/${id}/images`, { imageUrl });
       return { isSuccess: response.data, data: response.data } as ApiResponse<boolean>;
     } catch (error) {
       const { message, statusCode } = error as { message: string; statusCode: number };

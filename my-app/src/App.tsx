@@ -26,6 +26,7 @@ import CustomerProductPage from '@/views/customer/productPage/ProductPage';
 import CustomerStoreInfoPage from '@/views/customer/storeInfoPage/StoreInfoPage';
 import CustomerCartPage from '@/views/customer/cartPage/CartPage';
 import CustomerCheckoutPage from '@/views/customer/checkoutPage/CheckoutPage';
+import CustomerSearchPage from '@/views/customer/searchPage/SearchPage';
 import CustomerLayout from '@/components/CustomerLayout';
 import NotFoundPage from '@/components/NotFoundPage';
 import MainPage from '@/views/main/MainPage';
@@ -69,6 +70,7 @@ function App() {
           <Route path="/store/:slug/info" element={<CustomerStoreInfoPage />} />
           <Route path="/store/:slug/cart" element={<CustomerCartPage />} />
           <Route path="/store/:slug/checkout" element={<CustomerCheckoutPage />} />
+          <Route path="/store/:slug/search" element={<CustomerSearchPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage message="الصفحة غير موجودة" />} />
       </Routes>

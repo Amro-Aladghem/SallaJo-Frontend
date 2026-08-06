@@ -53,6 +53,8 @@ export default function ProductDialog({ productId, open, onClose, onRefreshList 
     message: '',
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const addImageInputRef = useRef<HTMLInputElement>(null);
+  const [addingImage, setAddingImage] = useState(false);
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -142,6 +144,38 @@ export default function ProductDialog({ productId, open, onClose, onRefreshList 
     fileInputRef.current?.click();
   };
 
+  const handleAddImageFile = async (file: File) => {
+    if (!product || addingImage) return;
+
+    setAddingImage(true);
+
+    const uploadResult = await ToolService.uploadImage(file);
+
+    if (!uploadResult.isSuccess) {
+      showToast('error', `فشل رفع الصورة`);
+      setAddingImage(false);
+      return;
+    }
+
+    const addResult = await ProductController.addProductImage(productId, uploadResult.data);
+
+    setAddingImage(false);
+
+    if (!addResult.isSuccess) {
+      showToast('error', `فشل إضافة الصورة`);
+      return;
+    }
+
+    showToast('success', 'تم إضافة الصورة بنجاح');
+    await fetchProduct();
+  };
+
+  const handleAddImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (addImageInputRef.current) addImageInputRef.current.value = '';
+    if (file) handleAddImageFile(file);
+  };
+
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -192,6 +226,14 @@ export default function ProductDialog({ productId, open, onClose, onRefreshList 
         onChange={handleFileSelect}
       />
 
+      <input
+        ref={addImageInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleAddImageSelect}
+      />
+
       <Toast
         open={toast.open}
         type={toast.type}
@@ -233,6 +275,9 @@ export default function ProductDialog({ productId, open, onClose, onRefreshList 
                   uploadingImageId={uploadingImageId}
                   onChangeImage={handleChangeImage}
                   primaryImageLink={primaryImageLink}
+                  onAddImage={() => addImageInputRef.current?.click()}
+                  onAddImageFile={handleAddImageFile}
+                  isAddingImage={addingImage}
                 />
 
                 {product.images.length > 0 && (

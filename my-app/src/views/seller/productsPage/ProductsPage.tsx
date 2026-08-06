@@ -5,10 +5,11 @@ import type { ProductSimpleInfoDto } from '@/types/dtos';
 import ProductCard from './Component/ProductCard';
 import ProductDialog from './Component/ProductDialog';
 import AddProductDialog from './Component/AddProductDialog';
+import SearchProductsDialog from './Component/SearchProductsDialog';
 import ErrorPage from '@/components/ErrorPage';
 import Loader from '@/components/Loader';
 import { Button } from '@/components/ui/button';
-import { Plus, RefreshCw } from 'lucide-react';
+import { Plus, RefreshCw, Search } from 'lucide-react';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<ProductSimpleInfoDto[]>([]);
@@ -20,6 +21,7 @@ export default function ProductsPage() {
 
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showSearchDialog, setShowSearchDialog] = useState(false);
 
   const loadMore = useCallback(async () => {
     const result = await StoreService.getMyStoreProducts({
@@ -67,6 +69,9 @@ export default function ProductsPage() {
             <RefreshCw className="h-4 w-4" />
           </Button>
         </div>
+        <Button variant="outline" size="sm" onClick={() => setShowSearchDialog(true)}>
+          <Search className="h-4 w-4" />
+        </Button>
         <Button variant="outline" size="sm" className="border-primary text-primary hover:bg-primary hover:text-white" onClick={() => setShowAddDialog(true)}>
           <Plus className="ml-1 h-4 w-4" /> إضافة منتج
         </Button>
@@ -117,6 +122,12 @@ export default function ProductsPage() {
         open={showAddDialog}
         onClose={() => setShowAddDialog(false)}
         onSuccess={refreshList}
+      />
+
+      <SearchProductsDialog
+        open={showSearchDialog}
+        onClose={() => setShowSearchDialog(false)}
+        onSelectProduct={(id) => setSelectedProductId(id)}
       />
     </div>
   );

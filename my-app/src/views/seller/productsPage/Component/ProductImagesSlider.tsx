@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { ProductImageDto } from '@/types/dtos';
 import { ChevronLeft, ChevronRight, Upload, Loader2 } from 'lucide-react';
 
@@ -8,6 +9,9 @@ interface Props {
   uploadingImageId?: string | null;
   onChangeImage?: (imageId: string) => void;
   primaryImageLink?: string;
+  onAddImage?: () => void;
+  onAddImageFile?: (file: File) => void;
+  isAddingImage?: boolean;
 }
 
 export default function ProductImagesSlider({
@@ -17,19 +21,61 @@ export default function ProductImagesSlider({
   uploadingImageId,
   onChangeImage,
   primaryImageLink,
+  onAddImage,
+  onAddImageFile,
+  isAddingImage,
 }: Props) {
+  const [dragging, setDragging] = useState(false);
+
+  if (images.length === 0) {
+    if (!onAddImage && !onAddImageFile) {
+      return (
+        <div className="w-full max-w-[280px] md:max-w-[400px] lg:max-w-[500px] mx-auto h-[280px] md:h-[350px] lg:h-[400px] bg-gray-100 rounded-lg flex items-center justify-center">
+          <p className="text-sm text-gray-400">لا توجد صور</p>
+        </div>
+      );
+    }
+
+    return (
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onAddImage}
+        onKeyDown={(e) => e.key === 'Enter' && onAddImage?.()}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragging(true);
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragging(false);
+          const file = e.dataTransfer.files?.[0];
+          if (file && onAddImageFile) onAddImageFile(file);
+        }}
+        className={`w-full max-w-[280px] md:max-w-[400px] lg:max-w-[500px] mx-auto h-[280px] md:h-[350px] lg:h-[400px] rounded-lg border-2 border-dashed cursor-pointer flex flex-col items-center justify-center gap-3 transition-colors ${
+          dragging ? 'border-primary bg-primary/10' : 'border-gray-300 hover:border-primary bg-gray-50'
+        }`}
+      >
+        {isAddingImage ? (
+          <>
+            <Loader2 className="h-10 w-10 animate-spin text-primary" />
+            <p className="text-sm text-gray-500">جارٍ رفع الصورة...</p>
+          </>
+        ) : (
+          <>
+            <Upload className="h-10 w-10 text-primary" />
+            <p className="text-sm text-gray-500">اسحب وأفلت الصورة هنا أو انقر للاختيار</p>
+          </>
+        )}
+      </div>
+    );
+  }
+
   const current = images[selectedIndex];
 
   const prev = () => onSelect(selectedIndex === 0 ? images.length - 1 : selectedIndex - 1);
   const next = () => onSelect(selectedIndex === images.length - 1 ? 0 : selectedIndex + 1);
-
-  if (images.length === 0) {
-    return (
-      <div className="w-full max-w-[280px] md:max-w-[400px] lg:max-w-[500px] mx-auto h-[280px] md:h-[350px] lg:h-[400px] bg-gray-100 rounded-lg flex items-center justify-center">
-        <p className="text-sm text-gray-400">لا توجد صور</p>
-      </div>
-    );
-  }
 
   const isUploading = uploadingImageId === current.id;
 
@@ -99,6 +145,45 @@ export default function ProductImagesSlider({
               }`}
             />
           ))}
+        </div>
+      )}
+
+      {images.length < 3 && (
+        <div className="mt-3">
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={onAddImage}
+            onKeyDown={(e) => e.key === 'Enter' && onAddImage?.()}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragging(true);
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragging(false);
+              const file = e.dataTransfer.files?.[0];
+              if (file && onAddImageFile) onAddImageFile(file);
+            }}
+            className={`w-full h-12 rounded-lg border cursor-pointer flex items-center justify-center gap-2 text-sm font-medium transition-colors ${
+              dragging
+                ? 'border-primary bg-primary/10 text-primary'
+                : 'border-primary/40 bg-primary/5 text-primary hover:bg-primary/10'
+            }`}
+          >
+            {isAddingImage ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>جارٍ رفع الصورة...</span>
+              </>
+            ) : (
+              <>
+                <Upload className="h-4 w-4" />
+                <span>إضافة صورة</span>
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>

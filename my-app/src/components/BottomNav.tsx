@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useParams, Link } from 'react-router-dom';
-import { Home, Percent, Gift, ShoppingCart } from 'lucide-react';
+import { Home, Percent, Gift, ShoppingCart, Search } from 'lucide-react';
 import { getCartCount } from '@/libs/cart';
 
 export default function BottomNav() {
@@ -20,8 +20,9 @@ export default function BottomNav() {
   const isActive = (path: string) => location.pathname === path;
 
   const items = [
-    { label: 'الخصومات', icon: Percent, href: `${base}/discounts` },
     { label: 'الرئيسية', icon: Home, href: base },
+    { label: 'البحث', icon: Search, href: `${base}/search` },
+    { label: 'الخصومات', icon: Percent, href: `${base}/discounts` },
     { label: 'العروض', icon: Gift, href: `${base}/offers` },
     { label: 'السلة', icon: ShoppingCart, href: `${base}/cart` },
   ];
