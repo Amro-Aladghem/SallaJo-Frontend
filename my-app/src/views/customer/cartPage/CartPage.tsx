@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getCart, updateProductQuantity, removeProductFromCart, removeOfferFromCart, getCartCount } from '@/libs/cart';
-import { getCustomerProducts, getCustomerOffers, getCustomerStore } from '@/libs/customerStorage';
+import { getCustomerOffers, getCustomerStore } from '@/libs/customerStorage';
 import type { ProductSimpleInfoDto, OfferCustomerInfoDto } from '@/types/dtos';
 import { ArrowRight, Minus, Plus, Trash2, ShoppingCart } from 'lucide-react';
 
@@ -24,13 +24,12 @@ export default function CartPage() {
 
   const store = getCustomerStore();
   const cart = getCart();
-  const allProducts = getCustomerProducts(slug || '') || [];
   const allOffers = getCustomerOffers() || [];
 
   const productRows: CartProductRow[] = cart.products
     .map((cp) => {
-      const info = allProducts.find((p) => p.id === cp.id);
-      return info ? { id: cp.id, info, quantity: cp.quantity } : null;
+      if (!cp.info) return null;
+      return { id: cp.id, info: cp.info, quantity: cp.quantity };
     })
     .filter((r): r is CartProductRow => r !== null);
 
@@ -42,7 +41,7 @@ export default function CartPage() {
     .filter((r): r is CartOfferRow => r !== null);
 
   const handleInc = (id: string) => {
-    const product = allProducts.find((p) => p.id === id);
+    const product = productRows.find((r) => r.id === id)?.info;
     const maxStock = store?.isAcceptedToShowStoke && product?.stock != null ? product.stock : 99;
     const currentQty = cart.products.find((p) => p.id === id)?.quantity || 0;
     if (currentQty >= maxStock) {

@@ -1,6 +1,9 @@
+import type { ProductSimpleInfoDto } from '@/types/dtos';
+
 export interface CartProduct {
   id: string;
   quantity: number;
+  info?: ProductSimpleInfoDto;
 }
 
 export interface CartOffer {
@@ -49,13 +52,14 @@ function saveCart(cart: CartData): void {
   sessionStorage.setItem(getCartKey(), JSON.stringify(cart));
 }
 
-export function addProductToCart(id: string, quantity: number): void {
+export function addProductToCart(id: string, quantity: number, info?: ProductSimpleInfoDto): void {
   const cart = getCart();
   const existing = cart.products.find((p) => p.id === id);
   if (existing) {
     existing.quantity = quantity;
+    if (info) existing.info = info;
   } else {
-    cart.products.push({ id, quantity });
+    cart.products.push({ id, quantity, info });
   }
   saveCart(cart);
   notifyCartChange();

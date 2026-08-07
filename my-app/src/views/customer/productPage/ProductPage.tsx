@@ -57,7 +57,16 @@ export default function ProductPage() {
       setQuantity(product.stoke);
       return;
     }
-    addProductToCart(id, quantity);
+    addProductToCart(id, quantity, {
+      id,
+      name: product?.name ?? '',
+      price: product?.price ?? null,
+      primaryImageLink: product?.primaryImageLink ?? '',
+      description: product?.description ?? '',
+      sequenceProductNumber: product?.sequenceProductNumber ?? null,
+      amountOfDiscount: product?.amountOfDiscount ?? null,
+      stock: product?.stoke ?? null,
+    });
     setInCart(true);
     setShowToast(true);
     setTimeout(() => setShowToast(false), 2000);

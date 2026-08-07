@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getCart } from '@/libs/cart';
-import { getCustomerProducts, getCustomerOffers, getCustomerStore } from '@/libs/customerStorage';
+import { getCustomerOffers, getCustomerStore } from '@/libs/customerStorage';
 import { StoreService } from '@/services/StoreService';
 import type { StoreDeliveryDto } from '@/types/dtos';
 import { governorates } from '@/assets/Data/governorates';
@@ -32,13 +32,12 @@ export default function CheckoutPage() {
 
   const store = getCustomerStore();
   const cart = getCart();
-  const allProducts = getCustomerProducts(slug || '') || [];
   const allOffers = getCustomerOffers() || [];
 
   const productRows = cart.products
     .map((cp) => {
-      const info = allProducts.find((p) => p.id === cp.id);
-      return info ? { info, quantity: cp.quantity } : null;
+      if (!cp.info) return null;
+      return { info: cp.info, quantity: cp.quantity };
     })
     .filter(Boolean);
 
@@ -273,7 +272,7 @@ export default function CheckoutPage() {
       const ep = getEffectivePrice(p);
       const total = ep * r.quantity;
       message += `${i+1}- ${p.name}\n`;
-      message += `  الكمية: ${r.quantity} | السعر: ${total.toFixed(1)} د.أ\n`;
+      message += `  الكمية: ${r.quantity} | السعر: ${total.toFixed(2)} د.أ\n`;
       if (p.amountOfDiscount && p.amountOfDiscount > 0) {
         message += `  مع تطبيق خصم ${p.amountOfDiscount} د.أ لكل وحدة\n`;
       }
@@ -294,9 +293,9 @@ export default function CheckoutPage() {
       }
     }
     if (orderType === 'delivery' && hasNegotiableDelivery) {
-      message += `\nالمجموع الكلي: ${subTotal.toFixed(1)} د.أ + سعر توصيل يحدده المتجر`;
+      message += `\nالمجموع الكلي: ${subTotal.toFixed(2)} د.أ + سعر توصيل يحدده المتجر`;
     } else {
-      message += `\nالمجموع الكلي: ${grandTotal.toFixed(1)} د.أ`;
+      message += `\nالمجموع الكلي: ${grandTotal.toFixed(2)} د.أ`;
     }
 
     const waPhone = store.phoneNumber.replace(/^0+/, '');
@@ -475,7 +474,7 @@ export default function CheckoutPage() {
         <div className="border-t border-gray-200 pt-4 space-y-2">
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-500 font-medium">السعر الإجمالي للمنتجات</span>
-            <span className="font-bold text-gray-900">{subTotal.toFixed(1)} د.أ</span>
+            <span className="font-bold text-gray-900">{subTotal.toFixed(2)} د.أ</span>
           </div>
           {orderType === 'delivery' && hasFixedDeliveryFee && (
             <div className="flex items-center justify-between text-sm">
@@ -500,8 +499,8 @@ export default function CheckoutPage() {
               <span className="font-bold text-gray-700">السعر الكلي</span>
               <span className="font-bold text-gray-900">
                 {hasNegotiableDelivery
-                  ? `${subTotal.toFixed(1)} د.أ + سعر توصيل يحدده المتجر`
-                  : `${grandTotal.toFixed(1)} د.أ`
+                  ? `${subTotal.toFixed(2)} د.أ + سعر توصيل يحدده المتجر`
+                  : `${grandTotal.toFixed(2)} د.أ`
                 }
               </span>
             </div>
