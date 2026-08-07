@@ -4,6 +4,7 @@ import { ToolService } from '@/services/ToolService';
 import { useAuth } from '@/hooks/useAuth';
 import { colors } from '@/assets/Data/colors';
 import { governorates } from '@/assets/Data/governorates';
+import { contactTypes } from '@/assets/Data/contactTypes';
 import type { StoreInfoForSellerDto, UpdateStoreInfoDto } from '@/types/dtos';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -57,6 +58,7 @@ export default function StoreInfoPage() {
   const [primaryColorId, setPrimaryColorId] = useState<number>(0);
   const [secondaryColorId, setSecondaryColorId] = useState<number>(0);
   const [isAcceptedToShowStoke, setIsAcceptedToShowStoke] = useState(false);
+  const [contactTypeId, setContactTypeId] = useState<number>((contactTypes[0]?.id ?? 1) as number);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const showToast = (type: string, message: string) => {
@@ -97,6 +99,7 @@ export default function StoreInfoPage() {
       setPrimaryColorId(result.data.primaryColorId);
       setSecondaryColorId(result.data.secondaryColorId);
       setIsAcceptedToShowStoke(result.data.isAcceptedToShowStoke);
+      setContactTypeId(result.data.contactTypeId);
     } else {
       setError(true);
     }
@@ -147,6 +150,14 @@ export default function StoreInfoPage() {
     if (!secondaryColorId) newErrors.secondaryColorId = 'اللون الثانوي مطلوب';
     if (!welcomeHeaderText.trim()) newErrors.welcomeHeaderText = 'الرسالة الترحيبية مطلوبة';
 
+    if (contactTypeId === 2) {
+      if (!instagramLink.trim()) {
+        newErrors.instagramLink = 'أدخل رابط الإنستغرام ليتمكن العملاء من التواصل معك';
+      } else if (!/^https:\/\/[a-zA-Z0-9.-]*instagram\.com/.test(instagramLink.trim())) {
+        newErrors.instagramLink = 'رابط الإنستغرام غير صالح — يجب أن يبدأ بـ https:// و يكون رابط instagram.com';
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -168,6 +179,7 @@ export default function StoreInfoPage() {
       logoImageUrl: logoUrl,
       coverStoreImageLink: coverUrl || null,
       isAcceptedToShowStoke,
+      contactTypeId,
     };
     const result = await StoreService.updateStore(storeId, data);
     if (result.isSuccess) {
@@ -329,8 +341,25 @@ export default function StoreInfoPage() {
               dir="ltr"
               className="bg-gray-50"
               value={instagramLink}
-              onChange={(e) => setInstagramLink(e.target.value)}
+              onChange={(e) => { setInstagramLink(e.target.value); setErrors((p) => ({ ...p, instagramLink: '' })); }}
             />
+            {errors.instagramLink && <p className="text-xs text-red-500">{errors.instagramLink}</p>}
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="si-contact-type">طريقة تواصل العميل مع متجرك</Label>
+            <select
+              id="si-contact-type"
+              value={contactTypeId}
+              onChange={(e) => setContactTypeId(Number(e.target.value))}
+              className="flex h-9 w-full rounded-md border border-input bg-gray-50 px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            >
+              {contactTypes.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="space-y-1.5">
