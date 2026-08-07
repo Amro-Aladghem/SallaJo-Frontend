@@ -16,4 +16,5 @@ export interface StorePageInfoDto {
   slug: string | null;
   isAcceptedToShowStoke: boolean;
   isHasDelivery: boolean;
+  contactType: string;
 }

@@ -12,4 +12,5 @@ export interface UpdateStoreInfoDto {
   welcomeHeaderText: string | null;
   coverStoreImageLink: string | null;
   isAcceptedToShowStoke: boolean;
+  contactTypeId?: number | null;
 }

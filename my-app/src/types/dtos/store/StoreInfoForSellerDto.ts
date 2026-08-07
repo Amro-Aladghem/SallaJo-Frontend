@@ -17,4 +17,5 @@ export interface StoreInfoForSellerDto {
   slug: string | null;
   isCompletedStoreProfile: boolean;
   isAcceptedToShowStoke: boolean;
+  contactTypeId: number;
 }
