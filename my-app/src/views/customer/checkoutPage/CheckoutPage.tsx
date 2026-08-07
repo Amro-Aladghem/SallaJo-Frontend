@@ -6,7 +6,7 @@ import { StoreService } from '@/services/StoreService';
 import type { StoreDeliveryDto } from '@/types/dtos';
 import { governorates } from '@/assets/Data/governorates';
 import { regions } from '@/assets/Data/regions';
-import { ArrowRight, Crosshair, Truck } from 'lucide-react';
+import { ArrowRight, Crosshair, Truck, Instagram } from 'lucide-react';
 
 const STORAGE_KEY = 'checkout';
 
@@ -250,7 +250,6 @@ export default function CheckoutPage() {
 
   const handleCheckout = () => {
     if (!validate()) return;
-    if (!store?.phoneNumber) return;
 
     const governorateName = governorates.find((g) => g.id === governorateId)?.name || '';
     const regionName = regions.find((r) => r.id === regionId)?.regionName || '';
@@ -298,6 +297,15 @@ export default function CheckoutPage() {
       message += `\nالمجموع الكلي: ${grandTotal.toFixed(2)} د.أ`;
     }
 
+    const isInstagram = store?.contactType === 'instagram' && !!store?.instagramLink;
+    if (isInstagram) {
+      const igUrl = store!.instagramLink!.replace(/^https?:\/\/(www\.)?instagram\.com/, 'https://ig.me/m');
+      navigator.clipboard?.writeText(message);
+      window.open(igUrl, '_blank');
+      return;
+    }
+
+    if (!store?.phoneNumber) return;
     const waPhone = store.phoneNumber.replace(/^0+/, '');
     const url = `https://wa.me/${waPhone}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
@@ -507,12 +515,25 @@ export default function CheckoutPage() {
           )}
         </div>
 
-        <button
-          onClick={handleCheckout}
-          className="w-full bg-primary text-white h-12 rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors"
-        >
-          إتمام الطلب عبر واتساب
-        </button>
+        {store?.contactType === 'instagram' && store?.instagramLink ? (
+          <div className="space-y-2">
+            <button
+              onClick={handleCheckout}
+              className="w-full bg-gradient-to-r from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white h-12 rounded-xl text-sm font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+            >
+              <Instagram className="w-4 h-4" />
+              نسخ الطلب والتواصل عبر الأنستجرام
+            </button>
+            <p className="text-center text-[11px] text-gray-400">فقط عليك لصق الرسالة عند التواصل</p>
+          </div>
+        ) : (
+          <button
+            onClick={handleCheckout}
+            className="w-full bg-primary text-white h-12 rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors"
+          >
+            إتمام الطلب عبر واتساب
+          </button>
+        )}
       </div>
     </>
   );
